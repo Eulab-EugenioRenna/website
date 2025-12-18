@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@theme {
+  --color-glass: rgba(255, 255, 255, 0.1);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+  --font-family-sans: 'Inter', sans-serif;
+  --font-family-display: 'Space Grotesk', sans-serif;
+  --font-family-heading: 'Outfit', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  background: #0b0f19; /* Deeper, richer dark background */
+  color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Liquid Glass Utilities - using CSS vars or custom classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-nav {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.02em;
+}
+
+.display-text {
+  font-family: var(--font-family-display);
+}
+
+/* Global Mouse Glow Layer */
+.mouse-glow-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0; /* Behind content but above body background */
+  overflow: hidden;
+}
+
+.mouse-glow-layer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    var(--glow-size, 600px) circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    rgba(37, 99, 235, 0.15), 
+    transparent 80%
+  );
+  animation: glow-pulse-global 4s ease-in-out infinite;
+}
+
+.mouse-glow-layer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    calc(var(--glow-size, 600px) * 0.5) circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    rgba(139, 92, 246, 0.1), 
+    transparent 80%
+  );
+  animation: glow-pulse-global 4s ease-in-out infinite reverse;
+}
+
+@keyframes glow-pulse-global {
+  0%, 100% {
+    opacity: 0.5;
+    --glow-size: 500px;
+  }
+  50% {
+    opacity: 1;
+    --glow-size: 800px;
+  }
+}

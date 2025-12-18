@@ -1,0 +1,38 @@
+<section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+  <!-- Background Elements -->
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" #floatingCircle></div>
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-[80px] pointer-events-none animate-pulse"></div>
+
+  <div class="container mx-auto px-6 relative z-10 text-center">
+    <div class="inline-block px-4 py-1.5 mb-6 rounded-full border border-blue-400/30 bg-blue-500/10 backdrop-blur-sm">
+      <span class="text-blue-300 text-sm font-medium tracking-wide">IT SOLUTIONS & CONSULTING</span>
+    </div>
+
+    <h1 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter leading-[0.9] display-text" #heroText>
+      Crafting Digital <br />
+      <span class="text-gradient">Realities</span>
+    </h1>
+
+    <p class="text-gray-400 text-lg md:text-2xl max-w-2xl mx-auto mb-12 leading-relaxed font-light" #heroSub>
+      Architetto di soluzioni cloud, pioniere dell'automazione e sviluppatore visionario.
+      Trasformo complessità tecnologiche in esperienze digitali fluide e potenti.
+    </p>
+
+    <div class="flex flex-col md:flex-row gap-4 justify-center items-center" #heroBtn>
+      <a href="#contact" class="px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 hover:scale-105 active:scale-95">
+        Prenota una call gratuita
+      </a>
+      <a href="#projects" class="px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium transition-all backdrop-blur-md hover:scale-105">
+        Vedi i miei lavori
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+    <span class="text-xs uppercase tracking-widest text-gray-500">Scroll</span>
+    <div class="w-5 h-8 rounded-full border border-gray-500 flex justify-center pt-2">
+      <div class="w-1 h-2 bg-gray-500 rounded-full"></div>
+    </div>
+  </div>
+</section>

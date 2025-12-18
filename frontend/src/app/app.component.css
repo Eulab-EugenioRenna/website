@@ -1,0 +1,4 @@
+/* Clear component-scoped glow logic to avoid conflicts */
+:host {
+  display: block;
+}
