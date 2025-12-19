@@ -23,6 +23,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   // Auto-scroll state
   isAutoScrolling = false;
   scrollInterval: any;
+  isLineVisible = false;
   
   @ViewChild('timelineContainer') timelineContainer!: ElementRef;
   @ViewChild('timelineContent') timelineContent!: ElementRef;
@@ -42,13 +43,21 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       // If the migration merge didn't apply to existing data, we merge manually here safely.
       const allClients = [...this.clients, ...this.partners];
       
-      // Group by Year
+      // Sort all clients by year first
+      allClients.sort((a, b) => (b.year || 2023) - (a.year || 2023));
+
+      // Group by Year and assign sides
+      let globalIndex = 0;
       const grouped = allClients.reduce((acc, item) => {
-        const year = item.year || 2023; // Default to 2023 if missing
+        const year = item.year || 2023;
         if (!acc[year]) {
           acc[year] = [];
         }
+        // Assign side based on global index for perfect alternating pattern
+        item.side = globalIndex % 2 === 0 ? 'left' : 'right';
+        item.visible = false;
         acc[year].push(item);
+        globalIndex++;
         return acc;
       }, {} as Record<number, any[]>);
 
@@ -56,6 +65,11 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.timeline = Object.keys(grouped)
         .map(year => ({ year: Number(year), items: grouped[Number(year)] }))
         .sort((a, b) => b.year - a.year);
+
+      // Setup tracking after a short delay to ensure DOM is ready
+      setTimeout(() => {
+        this.setupTimelineScrollTracking();
+      }, 500);
         
     } catch (error) {
       console.log('Backend not ready or empty', error);
@@ -63,8 +77,11 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Setup timeline scroll year tracking
-    this.setupTimelineScrollTracking();
+    // We already call it in ngOnInit after data load, 
+    // but just in case data was somehow already there or for static content:
+    if (this.timeline.length > 0) {
+      this.setupTimelineScrollTracking();
+    }
   }
 
   startAutoScroll() {
@@ -117,7 +134,8 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     
     if (!timelineContainer || !currentYearDisplay) return;
     
-    const observer = new IntersectionObserver((entries) => {
+    // Observer for year markers
+    const yearObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const year = entry.target.getAttribute('data-year');
@@ -132,11 +150,43 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       rootMargin: '-50% 0px -50% 0px',
       threshold: 0.1
     });
+
+    // Observer for reveal on scroll
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          if (target.classList.contains('timeline-center-line')) {
+            this.isLineVisible = true;
+          } else if (target.getAttribute('data-id')) {
+            const id = target.getAttribute('data-id');
+            this.timeline.forEach(group => {
+              const item = group.items.find(i => i.id === id);
+              if (item) item.visible = true;
+            });
+          }
+        }
+      });
+    }, {
+      root: timelineContainer,
+      rootMargin: '0px 0px -5% 0px',
+      threshold: 0.05
+    });
     
-    // Observe all year groups
+    // Observe year groups
     const yearGroups = timelineContainer.querySelectorAll('.timeline-year-group');
     yearGroups.forEach((group: Element) => {
-      observer.observe(group);
+      yearObserver.observe(group);
+    });
+
+    // Observe center line
+    const centerLine = timelineContainer.querySelector('.timeline-center-line');
+    if (centerLine) revealObserver.observe(centerLine);
+
+    // Observe items
+    const items = timelineContainer.querySelectorAll('.timeline-item');
+    items.forEach((item: Element) => {
+      revealObserver.observe(item);
     });
     
     // Set initial year

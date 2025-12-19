@@ -54,113 +54,175 @@
 #timelineContent {
     position: relative;
     margin: 0 auto;
+    padding-bottom: 4rem;
 }
 
-/* Center Line Fixes */
-#timelineContent > [class*="absolute"] {
+/* Enhanced Center Line */
+.timeline-center-line {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+        transparent, 
+        rgba(59, 130, 246, 0.5) 10%, 
+        rgba(59, 130, 246, 0.5) 90%, 
+        transparent
+    );
+    transform: translateX(-50%) scaleY(0);
+    transform-origin: top;
+    z-index: 1;
+    transition: transform 1.5s ease-out, opacity 0.5s ease;
+    opacity: 0;
 }
 
-/* Enhanced Timeline Styles */
-.timeline-year-group {
-    position: relative;
-    padding-left: 50%;
-    padding-right: 50%;
+.timeline-center-line.is-visible {
+    transform: translateX(-50%) scaleY(1);
+    opacity: 1;
 }
 
+/* Timeline Year Marker */
 .timeline-year-marker {
-    transition: all 0.3s ease;
+    position: relative;
     z-index: 10;
+    transition: all 0.3s ease;
 }
 
+/* Timeline Items */
 .timeline-item {
     position: relative;
-    min-height: 120px;
     width: 100%;
+    margin-bottom: 4rem;
     display: flex;
+    justify-content: center;
     align-items: center;
 }
 
 .timeline-item-content {
-    position: relative;
-    width: 50%;
-    padding: 0 2rem;
+    width: 42%;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.timeline-item-left {
-    flex-direction: row;
+.is-visible .timeline-item-content {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.timeline-item-right {
-    flex-direction: row-reverse;
+.timeline-item.side-left {
+    justify-content: flex-start;
 }
 
-.timeline-item-left .timeline-item-content {
+.timeline-item.side-right {
+    justify-content: flex-end;
+}
+
+.timeline-item.side-left .timeline-item-content {
     text-align: right;
+    margin-right: 8%;
 }
 
-.timeline-item-right .timeline-item-content {
+.timeline-item.side-right .timeline-item-content {
     text-align: left;
+    margin-left: 8%;
 }
 
-/* Timeline Dot Connectors */
+/* Timeline Dot */
 .timeline-dot {
-    z-index: 1;
-    transition: all 0.3s ease;
-}
-
-.timeline-item:hover .timeline-dot {
-    transform: translate(-50%, -50%) scale(1.5);
-    background: #60a5fa;
-}
-
-.timeline-item::before {
-    content: '';
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
     width: 12px;
     height: 12px;
     background: #3b82f6;
     border-radius: 50%;
     border: 3px solid #0b0f19;
-    z-index: 1;
-    transition: all 0.3s ease;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 5;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background 0.3s ease;
 }
 
-.timeline-item:hover::before {
+.is-visible .timeline-dot {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.timeline-item:hover .timeline-dot {
+    transform: translate(-50%, -50%) scale(1.5);
     background: #60a5fa;
-    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.8);
 }
 
-/* Fixed Year Display */
-#currentYearDisplay {
-    font-family: var(--font-family-heading);
-    text-shadow: 0 2px 20px rgba(59, 130, 246, 0.3);
+/* Delays for cascading effect can be handled via CSS if needed, 
+   but with IntersectionObserver it's more natural per item */
+.timeline-item-content {
+    transition-delay: 0.2s;
 }
 
-/* Glass Panel Enhancement */
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timeline-center-line {
+        left: 20px;
+        transform: none;
+    }
+    
+    .timeline-item {
+        justify-content: flex-start !important;
+        padding-left: 45px;
+    }
+    
+    .timeline-item-content {
+        width: 100%;
+        text-align: left !important;
+        margin: 0 !important;
+    }
+    
+    .timeline-dot {
+        left: 20px;
+        transform: translate(-50%, -50%);
+    }
+
+    .timeline-year-marker {
+        left: 20px !important;
+        transform: translateX(0) !important;
+    }
+}
+
+/* Existing Glass Panel and Slider Styles */
+.logo-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.logo-slide-track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+}
+
+.logo-slide-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
 .glass-panel {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .timeline-item {
-        flex-direction: column !important;
-        text-align: center !important;
-    }
-    
-    .timeline-item .w-1/2 {
-        width: 100% !important;
-    }
-    
-    .timeline-item .w-1/2:last-child {
-        display: none;
-    }
+#currentYearDisplay {
+    font-family: var(--font-family-heading);
+    text-shadow: 0 2px 20px rgba(59, 130, 246, 0.3);
 }

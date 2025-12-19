@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile
     container_name: eulab-frontend
     ports:
-      - "8080:80"
+      - "8081:80"
     restart: unless-stopped
     depends_on:
       - backend
