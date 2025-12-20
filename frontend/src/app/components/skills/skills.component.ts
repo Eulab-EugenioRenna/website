@@ -71,10 +71,8 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (this.timeline.length > 0) {
-      this.setupGSAPTimeline();
-    }
-    this.setupTechSlider();
+    // OnInit already handles initialization with a delay to ensure data is ready.
+    // Removed redundant setupTechSlider call here to prevent animation stuttering.
   }
 
   private techSliderAnim: gsap.core.Timeline | null = null;
@@ -83,7 +81,6 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     const track = document.querySelector('.logo-slide-track');
     if (!track) return;
 
-    // Kill existing animation
     if (this.techSliderAnim) {
       this.techSliderAnim.kill();
     }
@@ -91,24 +88,27 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     const items = track.querySelectorAll('.tech-item');
     if (items.length === 0) return;
 
-    // Infinite Loop Logic
-    const totalWidth = track.scrollWidth / 2; // Since we have duplicates
+    const totalWidth = track.scrollWidth / 2;
     
     this.techSliderAnim = gsap.timeline({
       repeat: -1,
-      defaults: { ease: 'none', duration: 40 }
+      defaults: { 
+        ease: 'none', 
+        duration: 30, // Consistently use duration here
+        force3D: true, // Hardware acceleration
+        autoRound: false // Smoother sub-pixel movement
+      }
     });
 
     this.techSliderAnim.to(track, {
       x: -totalWidth,
-      duration: 30, // Adjust speed here
+      // The timeline default duration (30) will be used
     });
 
-    // Interaction handling
     track.addEventListener('mouseenter', () => this.techSliderAnim?.pause());
     track.addEventListener('mouseleave', () => this.techSliderAnim?.resume());
-    track.addEventListener('touchstart', () => this.techSliderAnim?.pause());
-    track.addEventListener('touchend', () => this.techSliderAnim?.resume());
+    track.addEventListener('touchstart', () => this.techSliderAnim?.pause(), { passive: true });
+    track.addEventListener('touchend', () => this.techSliderAnim?.resume(), { passive: true });
   }
 
   setupGSAPTimeline() {

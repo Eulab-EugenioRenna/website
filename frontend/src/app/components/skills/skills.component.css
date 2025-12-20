@@ -23,6 +23,7 @@
     width: max-content;
     white-space: nowrap;
     visibility: visible !important;
+    will-change: transform; /* Hardware acceleration hint */
 }
 
 @media (max-width: 768px) {

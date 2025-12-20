@@ -76,6 +76,12 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+.mouse-glow-layer::before, .mouse-glow-layer::after {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
 .mouse-glow-layer::before {
   content: '';
   position: absolute;
@@ -84,11 +90,11 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 100%;
   background: radial-gradient(
-    var(--glow-size, 600px) circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    600px circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
     rgba(37, 99, 235, 0.15), 
     transparent 80%
   );
-  animation: glow-pulse-global 4s ease-in-out infinite;
+  animation: glow-pulse-perf 4s ease-in-out infinite;
 }
 
 .mouse-glow-layer::after {
@@ -99,21 +105,21 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 100%;
   background: radial-gradient(
-    calc(var(--glow-size, 600px) * 0.5) circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    300px circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
     rgba(139, 92, 246, 0.1), 
     transparent 80%
   );
-  animation: glow-pulse-global 4s ease-in-out infinite reverse;
+  animation: glow-pulse-perf 4s ease-in-out infinite reverse;
 }
 
-@keyframes glow-pulse-global {
+@keyframes glow-pulse-perf {
   0%, 100% {
-    opacity: 0.5;
-    --glow-size: 500px;
+    opacity: 0.4;
+    transform: scale(0.9) translateZ(0);
   }
   50% {
-    opacity: 1;
-    --glow-size: 800px;
+    opacity: 0.8;
+    transform: scale(1.1) translateZ(0);
   }
 }
 /* Mobile/iOS Browser Fallbacks */

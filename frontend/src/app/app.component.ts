@@ -82,11 +82,20 @@ export class AppComponent implements AfterViewInit {
 
   initGlowEffect() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('mousemove', (e) => {
-        const x = e.clientX;
-        const y = e.clientY;
-        document.documentElement.style.setProperty('--cursor-x', `${x}px`);
-        document.documentElement.style.setProperty('--cursor-y', `${y}px`);
+      let mouseX = 0;
+      let mouseY = 0;
+      
+      const onMouseMove = (e: MouseEvent) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      };
+
+      window.addEventListener('mousemove', onMouseMove);
+
+      // Use GSAP ticker for performance (throttled to screen refresh rate)
+      gsap.ticker.add(() => {
+        document.documentElement.style.setProperty('--cursor-x', `${mouseX}px`);
+        document.documentElement.style.setProperty('--cursor-y', `${mouseY}px`);
       });
     }
   }
