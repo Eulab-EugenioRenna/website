@@ -94,7 +94,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       repeat: -1,
       defaults: { 
         ease: 'none', 
-        duration: 30, // Consistently use duration here
+        duration: 45, // Increased for a smoother, slower feel
         force3D: true, // Hardware acceleration
         autoRound: false // Smoother sub-pixel movement
       }
@@ -149,7 +149,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Animate the year marker itself
       const marker = group.querySelector('.timeline-year-marker');
-      if (marker && !document.documentElement.classList.contains('is-mobile')) {
+      if (marker) {
         gsap.from(marker, {
           scrollTrigger: {
             trigger: marker,
@@ -171,7 +171,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       const dot = item.querySelector('.timeline-dot');
       const isLeft = item.classList.contains('side-left');
 
-      if (content && dot && !document.documentElement.classList.contains('is-mobile')) {
+      if (content && dot) {
         // Animate content
         gsap.from(content, {
           scrollTrigger: {
@@ -201,7 +201,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 4. Animate Tech Stack Section Entrance
     const techSlider = container.parentElement?.querySelector('.logo-slider');
-    if (techSlider && !document.documentElement.classList.contains('is-mobile')) {
+    if (techSlider) {
       gsap.from(techSlider, {
         scrollTrigger: {
           trigger: techSlider,
