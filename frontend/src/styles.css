@@ -140,7 +140,6 @@ h1, h2, h3, h4, h5, h6 {
 .is-mobile .timeline-year-marker {
   opacity: 1 !important;
   visibility: visible !important;
-  transform: none !important;
 }
 
 /* Specific tweaks for Chrome on iOS */
