@@ -32,20 +32,19 @@ export class AboutComponent implements AfterViewInit {
       ease: 'power3.out'
     });
 
-    // Staggered cards reveal
-    if (cards.length > 0) {
-      gsap.from(cards, {
+    // 2. Individual card reveals for better mobile reliability
+    cards.forEach((card) => {
+      gsap.from(card, {
         scrollTrigger: {
-          trigger: cards[0],
-          start: 'top 95%',
+          trigger: card,
+          start: 'top 90%',
           toggleActions: 'play none none reverse'
         },
         opacity: 0,
-        y: 40,
+        y: 30,
         duration: 0.6,
-        stagger: 0.12,
         ease: 'power3.out'
       });
-    }
+    });
   }
 }

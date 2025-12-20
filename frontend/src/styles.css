@@ -138,7 +138,6 @@ h1, h2, h3, h4, h5, h6 {
 .is-mobile .logo-slide-track,
 .is-mobile .timeline-center-line,
 .is-mobile .timeline-year-marker {
-  opacity: 1 !important;
   visibility: visible !important;
 }
 
