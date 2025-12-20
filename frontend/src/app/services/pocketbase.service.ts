@@ -14,17 +14,28 @@ export class PocketbaseService {
     
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      console.log('--- POCKETBASE TELEMETRY ---');
+      console.log('Location:', window.location.href);
+      console.log('Hostname:', hostname);
+      console.log('Protocol:', protocol);
+      console.log('Port:', window.location.port);
+      
       if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-        // Assume PB is on the same host, port 8090 (or 443 if proxied, but 8090 is PB default)
-        // If the user has a proxy, they might need to adjust this, but this is better than localhost
-        pbUrl = `${window.location.protocol}//${hostname}${window.location.port ? ':' + window.location.port : ':8090'}`;
-        
-        // If we are on eulab.cloud without a port in the URL, we might still need 8090 
-        // unless it's proxied to 80/443.
-        if (!window.location.port && (hostname.includes('eulab.cloud'))) {
-           pbUrl = `${window.location.protocol}//${hostname}:8090`;
+        if (hostname.includes('eulab.cloud')) {
+          // Force port 8090 but allow protocol detection
+          pbUrl = `${protocol}//${hostname}:8090`;
+          
+          // Debugging Tip: If this fails, try changing protocol to 'http:' manually or 'https:'
+          console.warn('Production Mode: If you see "Mixed Content" errors, we need to proxy PB via HTTPS.');
+        } else {
+          pbUrl = `${protocol}//${hostname}${window.location.port ? ':' + window.location.port : ':8090'}`;
         }
       }
+      
+      console.log('Final PB URL:', pbUrl);
+      console.log('--- END TELEMETRY ---');
     }
     
     this.pb = new PocketBase(pbUrl);
