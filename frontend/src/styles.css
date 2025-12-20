@@ -148,6 +148,30 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100dvh;
 }
 
+/* Safe Glow Utilities - No clipping issues with overflow:hidden */
+.glow-safe {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+.glow-blue {
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.15), transparent 70%);
+}
+
+.glow-purple {
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.12), transparent 70%);
+}
+
+.glow-cyan {
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.12), transparent 70%);
+}
+
+.glow-green {
+  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.12), transparent 70%);
+}
+
 /* Hero Centering and Spacing */
 .hero-content-wrapper {
   display: flex;
