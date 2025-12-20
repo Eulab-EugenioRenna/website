@@ -1,16 +1,22 @@
 .logo-slider {
     position: relative;
     width: 100%;
+    min-height: 180px; /* Ensure space is reserved */
     overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    display: flex;
+    align-items: center;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .logo-slide-track {
     display: flex;
-    gap: 4rem; /* Adjustable gap between logos */
+    gap: 3rem; 
     width: max-content;
     animation: scroll 40s linear infinite;
+    visibility: visible !important;
 }
 
 .logo-slide-track:hover {

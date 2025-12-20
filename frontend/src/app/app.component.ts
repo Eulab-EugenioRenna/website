@@ -32,6 +32,20 @@ export class AppComponent implements AfterViewInit {
 
   constructor() {
     this.initGlowEffect();
+    this.detectDevice();
+  }
+
+  detectDevice() {
+    if (typeof window !== 'undefined') {
+      const ua = window.navigator.userAgent;
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+      const isChrome = /Chrome|CriOS/i.test(ua);
+
+      if (isMobile) document.documentElement.classList.add('is-mobile');
+      if (isIOS) document.documentElement.classList.add('is-ios');
+      if (isChrome) document.documentElement.classList.add('is-chrome');
+    }
   }
 
   ngAfterViewInit() {
@@ -45,15 +59,21 @@ export class AppComponent implements AfterViewInit {
     sections.forEach(selector => {
       const element = document.querySelector(selector);
       if (element) {
+        // Fallback for mobile if visibility is an issue
+        if (document.documentElement.classList.contains('is-mobile')) {
+          gsap.set(element, { opacity: 1, y: 0 });
+          return;
+        }
+
         gsap.from(element, {
           scrollTrigger: {
-            trigger: element,
-            start: 'top 95%',
+            trigger: selector,
+            start: 'top 98%',
             toggleActions: 'play none none reverse',
           },
           opacity: 0,
-          y: 30,
-          duration: 0.8,
+          y: 40,
+          duration: 1,
           ease: 'power3.out'
         });
       }

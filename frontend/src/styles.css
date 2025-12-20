@@ -116,3 +116,34 @@ h1, h2, h3, h4, h5, h6 {
     --glow-size: 800px;
   }
 }
+/* Mobile/iOS Browser Fallbacks */
+.is-mobile .glass-nav {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* Ensure visibility if GSAP fails/delays on mobile */
+.is-mobile .about-reveal,
+.is-mobile .about-card,
+.is-mobile .tech-item,
+.is-mobile .timeline-item,
+.is-mobile .contact-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Specific tweaks for Chrome on iOS */
+.is-ios.is-chrome .min-h-screen {
+  min-height: 100dvh;
+}
+
+/* Hero Centering and Spacing */
+.hero-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding-bottom: 5rem; /* Space for scroll indicator */
+}
