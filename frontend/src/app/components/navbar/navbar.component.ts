@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-navbar',
@@ -15,6 +16,16 @@ export class NavbarComponent {
     this.isMenuOpen = !this.isMenuOpen;
     if (this.isMenuOpen) {
       document.body.style.overflow = 'hidden';
+      // Staggered entrance for menu links
+      setTimeout(() => {
+        gsap.from('.mobile-menu-link', {
+          y: 20,
+          opacity: 0,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: 'power4.out'
+        });
+      }, 50);
     } else {
       document.body.style.overflow = 'auto';
     }

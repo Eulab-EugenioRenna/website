@@ -1,4 +1,4 @@
-<section class="min-h-[100svh] md:min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-12">
+<section class="min-h-[100svh] md:min-h-screen flex items-center justify-center relative overflow-hidden pt-32 pb-12">
   <!-- Background Elements -->
   <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" #floatingCircle></div>
   <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-[80px] pointer-events-none animate-pulse"></div>
@@ -8,7 +8,7 @@
       <span class="text-blue-300 text-sm font-medium tracking-wide">IT SOLUTIONS & CONSULTING</span>
     </div>
 
-    <h1 class="text-5xl md:text-8xl font-bold mb-8 tracking-tighter leading-[0.95] display-text" #heroText>
+    <h1 class="text-4xl md:text-8xl font-bold mb-8 tracking-tighter leading-[0.95] display-text" #heroText>
       Crafting Digital <br />
       <span class="text-gradient">Realities</span>
     </h1>
@@ -26,13 +26,13 @@
         Vedi i miei lavori
       </a>
     </div>
+  </div>
 
-    <!-- Scroll Indicator positioned relatively to content wrapper bottom on mobile -->
-    <div class="md:absolute md:bottom-10 flex flex-col items-center gap-2 opacity-50 animate-bounce mt-auto">
-      <span class="text-xs uppercase tracking-widest text-gray-500">Scroll</span>
-      <div class="w-5 h-8 rounded-full border border-gray-500 flex justify-center pt-2">
-        <div class="w-1 h-2 bg-gray-500 rounded-full"></div>
-      </div>
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 pointer-events-none opacity-60">
+    <span class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Scroll</span>
+    <div class="w-[22px] h-[36px] rounded-full border-2 border-gray-600 flex justify-center p-1.5">
+      <div class="w-1 h-2 bg-blue-500 rounded-full animate-bounce"></div>
     </div>
   </div>
 </section>

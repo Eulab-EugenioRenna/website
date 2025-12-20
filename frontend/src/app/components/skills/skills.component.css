@@ -1,7 +1,8 @@
+/* Main Container */
 .logo-slider {
     position: relative;
     width: 100%;
-    min-height: 180px; /* Ensure space is reserved */
+    min-height: 140px;
     overflow: hidden;
     mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
@@ -9,45 +10,34 @@
     align-items: center;
     visibility: visible !important;
     opacity: 1 !important;
+    cursor: grab;
+}
+
+.logo-slider:active {
+    cursor: grabbing;
 }
 
 .logo-slide-track {
     display: flex;
     gap: 3rem; 
     width: max-content;
-    animation: scroll 40s linear infinite;
+    white-space: nowrap;
     visibility: visible !important;
 }
 
-.logo-slide-track:hover {
-    animation-play-state: paused;
-}
-
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%); /* Move half way effectively if content is doubled */
-    }
-}
-
-/* Adjust animation speed for different screen sizes if needed */
 @media (max-width: 768px) {
     .logo-slide-track {
-        animation-duration: 20s;
-        gap: 2rem;
+        gap: 1.5rem;
     }
-}
-
-/* Hide scrollbar but allow scrolling */
-.scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari, Opera */
+    .logo-slider {
+        min-height: 120px;
+        /* Allow natural overflow if interaction is needed */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .logo-slider::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* Timeline Container Fixes */
@@ -106,7 +96,6 @@
 .timeline-item-content {
     width: 42%;
     z-index: 2;
-    /* Opacity and transform removed to let GSAP handle animations without conflicts */
 }
 
 /* Fallback for when JS is disabled or as a base state */
@@ -142,27 +131,16 @@
     background: #3b82f6;
     border-radius: 50%;
     border: 3px solid #0b0f19;
-    transform: translate(-50%, -50%); /* Removed scale(0) */
+    transform: translate(-50%, -50%);
     z-index: 5;
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
     transition: box-shadow 0.3s ease, background 0.3s ease;
-}
-
-/* Base state for GSAP */
-.timeline-dot {
-    transform: translate(-50%, -50%);
 }
 
 .timeline-item:hover .timeline-dot {
     transform: translate(-50%, -50%) scale(1.5);
     background: #60a5fa;
     box-shadow: 0 0 20px rgba(96, 165, 250, 0.8);
-}
-
-/* Delays for cascading effect can be handled via CSS if needed, 
-   but with IntersectionObserver it's more natural per item */
-.timeline-item-content {
-    transition-delay: 0.2s;
 }
 
 /* Responsive adjustments */
@@ -192,31 +170,6 @@
         left: 20px !important;
         transform: translateX(0) !important;
     }
-}
-
-/* Existing Glass Panel and Slider Styles */
-.logo-slider {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-.logo-slide-track {
-    display: flex;
-    gap: 4rem;
-    width: max-content;
-    animation: scroll 40s linear infinite;
-}
-
-.logo-slide-track:hover {
-    animation-play-state: paused;
-}
-
-@keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
 }
 
 .glass-panel {

@@ -38,38 +38,31 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      // Fetch all data
       this.partners = await this.pb.getPartners();
       this.clients = await this.pb.getClients();
       this.techStack = await this.pb.getTechStack();
 
       const allClients = [...this.clients, ...this.partners];
-      
-      // Sort all clients by year first
       allClients.sort((a, b) => (b.year || 2023) - (a.year || 2023));
 
-      // Group by Year and assign sides
       let globalIndex = 0;
       const grouped = allClients.reduce((acc, item) => {
         const year = item.year || 2023;
-        if (!acc[year]) {
-          acc[year] = [];
-        }
+        if (!acc[year]) acc[year] = [];
         item.side = globalIndex % 2 === 0 ? 'left' : 'right';
-        item.visible = true; // Set to true since we'll use GSAP for visibility animations
+        item.visible = true;
         acc[year].push(item);
         globalIndex++;
         return acc;
       }, {} as Record<number, any[]>);
 
-      // Convert to Array and Sort by Year Descending
       this.timeline = Object.keys(grouped)
         .map(year => ({ year: Number(year), items: grouped[Number(year)] }))
         .sort((a, b) => b.year - a.year);
 
-      // Setup GSAP after a short delay to ensure DOM is rendered
       setTimeout(() => {
         this.setupGSAPTimeline();
+        this.setupTechSlider();
       }, 500);
         
     } catch (error) {
@@ -81,6 +74,41 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.timeline.length > 0) {
       this.setupGSAPTimeline();
     }
+    this.setupTechSlider();
+  }
+
+  private techSliderAnim: gsap.core.Timeline | null = null;
+
+  setupTechSlider() {
+    const track = document.querySelector('.logo-slide-track');
+    if (!track) return;
+
+    // Kill existing animation
+    if (this.techSliderAnim) {
+      this.techSliderAnim.kill();
+    }
+
+    const items = track.querySelectorAll('.tech-item');
+    if (items.length === 0) return;
+
+    // Infinite Loop Logic
+    const totalWidth = track.scrollWidth / 2; // Since we have duplicates
+    
+    this.techSliderAnim = gsap.timeline({
+      repeat: -1,
+      defaults: { ease: 'none', duration: 40 }
+    });
+
+    this.techSliderAnim.to(track, {
+      x: -totalWidth,
+      duration: 30, // Adjust speed here
+    });
+
+    // Interaction handling
+    track.addEventListener('mouseenter', () => this.techSliderAnim?.pause());
+    track.addEventListener('mouseleave', () => this.techSliderAnim?.resume());
+    track.addEventListener('touchstart', () => this.techSliderAnim?.pause());
+    track.addEventListener('touchend', () => this.techSliderAnim?.resume());
   }
 
   setupGSAPTimeline() {
