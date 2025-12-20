@@ -64,62 +64,62 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-display);
 }
 
-/* Global Mouse Glow Layer */
+/* Global Mouse Glow Layer - Refactored for performance and no clipping */
 .mouse-glow-layer {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  z-index: 0; /* Behind content but above body background */
-  overflow: hidden;
+  z-index: 0;
+  overflow: visible;
+  will-change: transform;
 }
 
 .mouse-glow-layer::before, .mouse-glow-layer::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  transform-origin: center;
   will-change: transform, opacity;
   backface-visibility: hidden;
-  transform: translateZ(0); /* Force GPU layer */
 }
 
 .mouse-glow-layer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  width: 1200px;
+  height: 1200px;
+  left: -600px;
+  top: -600px;
   background: radial-gradient(
-    600px circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    circle at center, 
     rgba(37, 99, 235, 0.15), 
-    transparent 80%
+    transparent 70%
   );
-  animation: glow-pulse-perf 4s ease-in-out infinite;
+  animation: glow-pulse-perf 6s ease-in-out infinite;
 }
 
 .mouse-glow-layer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  width: 800px;
+  height: 800px;
+  left: -400px;
+  top: -400px;
   background: radial-gradient(
-    300px circle at var(--cursor-x, 50vw) var(--cursor-y, 50vh), 
+    circle at center, 
     rgba(139, 92, 246, 0.1), 
-    transparent 80%
+    transparent 70%
   );
-  animation: glow-pulse-perf 4s ease-in-out infinite reverse;
+  animation: glow-pulse-perf 6s ease-in-out infinite reverse;
 }
 
 @keyframes glow-pulse-perf {
   0%, 100% {
-    opacity: 0.4;
-    transform: scale(0.9) translateZ(0);
+    opacity: 0.5;
+    transform: scale(0.8) translateZ(0);
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.1) translateZ(0);
+    opacity: 1;
+    transform: scale(1.2) translateZ(0);
   }
 }
 /* Mobile/iOS Browser Fallbacks */

@@ -82,8 +82,8 @@ export class AppComponent implements AfterViewInit {
 
   initGlowEffect() {
     if (typeof window !== 'undefined') {
-      let mouseX = 0;
-      let mouseY = 0;
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
       
       const onMouseMove = (e: MouseEvent) => {
         mouseX = e.clientX;
@@ -92,10 +92,13 @@ export class AppComponent implements AfterViewInit {
 
       window.addEventListener('mousemove', onMouseMove);
 
-      // Use GSAP ticker for performance (throttled to screen refresh rate)
+      // Use GSAP ticker to move the element for maximum performance
       gsap.ticker.add(() => {
-        document.documentElement.style.setProperty('--cursor-x', `${mouseX}px`);
-        document.documentElement.style.setProperty('--cursor-y', `${mouseY}px`);
+        gsap.set('.mouse-glow-layer', {
+          x: mouseX,
+          y: mouseY,
+          force3D: true
+        });
       });
     }
   }
