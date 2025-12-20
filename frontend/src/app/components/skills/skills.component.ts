@@ -2,6 +2,11 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } fr
 import { CommonModule } from '@angular/common';
 import { PocketbaseService } from '../../services/pocketbase.service';
 import { environment } from '../../../environments/environment';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 @Component({
   selector: 'app-skills',
@@ -22,11 +27,12 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   
   // Auto-scroll state
   isAutoScrolling = false;
-  scrollInterval: any;
   isLineVisible = false;
   
   @ViewChild('timelineContainer') timelineContainer!: ElementRef;
   @ViewChild('timelineContent') timelineContent!: ElementRef;
+
+  private scrollTriggers: ScrollTrigger[] = [];
 
   constructor(private pb: PocketbaseService) {}
 
@@ -37,10 +43,6 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.clients = await this.pb.getClients();
       this.techStack = await this.pb.getTechStack();
 
-      // Combine partners and clients effectively if user considers them merged, 
-      // but migration separates them? The user said "Partner e clienti diventa solo clienti".
-      // We will treat all as clients for the timeline. 
-      // If the migration merge didn't apply to existing data, we merge manually here safely.
       const allClients = [...this.clients, ...this.partners];
       
       // Sort all clients by year first
@@ -53,9 +55,8 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!acc[year]) {
           acc[year] = [];
         }
-        // Assign side based on global index for perfect alternating pattern
         item.side = globalIndex % 2 === 0 ? 'left' : 'right';
-        item.visible = false;
+        item.visible = true; // Set to true since we'll use GSAP for visibility animations
         acc[year].push(item);
         globalIndex++;
         return acc;
@@ -66,9 +67,9 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
         .map(year => ({ year: Number(year), items: grouped[Number(year)] }))
         .sort((a, b) => b.year - a.year);
 
-      // Setup tracking after a short delay to ensure DOM is ready
+      // Setup GSAP after a short delay to ensure DOM is rendered
       setTimeout(() => {
-        this.setupTimelineScrollTracking();
+        this.setupGSAPTimeline();
       }, 500);
         
     } catch (error) {
@@ -77,126 +78,151 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // We already call it in ngOnInit after data load, 
-    // but just in case data was somehow already there or for static content:
     if (this.timeline.length > 0) {
-      this.setupTimelineScrollTracking();
+      this.setupGSAPTimeline();
+    }
+  }
+
+  setupGSAPTimeline() {
+    // Kill existing triggers to avoid duplicates
+    this.scrollTriggers.forEach(st => st.kill());
+    this.scrollTriggers = [];
+
+    const container = this.timelineContainer?.nativeElement;
+    const currentYearDisplay = document.getElementById('currentYearDisplay');
+    
+    if (!container) return;
+
+    // 1. Animate Center Line
+    const centerLine = container.querySelector('.timeline-center-line');
+    if (centerLine) {
+      const lineST = ScrollTrigger.create({
+        trigger: container,
+        start: 'top 80%',
+        onEnter: () => this.isLineVisible = true
+      });
+      this.scrollTriggers.push(lineST);
+    }
+
+    // 2. Animate Year Groups and Update Year Display
+    const yearGroups = container.querySelectorAll('.timeline-year-group');
+    yearGroups.forEach((group: HTMLElement) => {
+      const year = group.getAttribute('data-year');
+      
+      const yearST = ScrollTrigger.create({
+        trigger: group,
+        start: 'top 50%',
+        end: 'bottom 50%',
+        onEnter: () => this.updateYearDisplay(year, currentYearDisplay),
+        onEnterBack: () => this.updateYearDisplay(year, currentYearDisplay)
+      });
+      this.scrollTriggers.push(yearST);
+
+      // Animate the year marker itself
+      const marker = group.querySelector('.timeline-year-marker');
+      if (marker) {
+        gsap.from(marker, {
+          scrollTrigger: {
+            trigger: marker,
+            start: 'top 95%',
+            toggleActions: 'play none none reverse'
+          },
+          scale: 0.5,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'back.out(1.7)'
+        });
+      }
+    });
+
+    // 3. Animate Timeline Items
+    const items = container.querySelectorAll('.timeline-item');
+    items.forEach((item: HTMLElement) => {
+      const content = item.querySelector('.timeline-item-content');
+      const dot = item.querySelector('.timeline-dot');
+      const isLeft = item.classList.contains('side-left');
+
+      if (content && dot) {
+        // Animate content
+        gsap.from(content, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 95%',
+            toggleActions: 'play none none reverse'
+          },
+          x: isLeft ? -50 : 50,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        });
+
+        // Animate dot
+        gsap.from(dot, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 95%',
+            toggleActions: 'play none none reverse'
+          },
+          scale: 0,
+          duration: 0.4,
+          ease: 'back.out(2)'
+        });
+      }
+    });
+
+    // 4. Animate Tech Stack items
+    const techItems = container.parentElement?.querySelectorAll('.tech-item');
+    if (techItems && techItems.length > 0) {
+      gsap.from(techItems, {
+        scrollTrigger: {
+          trigger: techItems[0],
+          start: 'top 95%',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        y: 20,
+        scale: 0.9,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: 'power2.out'
+      });
+    }
+  }
+
+  updateYearDisplay(year: string | null, display: HTMLElement | null) {
+    if (year && display) {
+      display.textContent = year;
+      gsap.fromTo(display, 
+        { scale: 0.8, opacity: 0.1 }, 
+        { scale: 1, opacity: 0.2, duration: 0.5, ease: 'power2.out' }
+      );
     }
   }
 
   startAutoScroll() {
-    if (this.isAutoScrolling) return;
-    
-    this.isAutoScrolling = true;
+    // Smoothly scroll the whole page to the timeline
     const container = this.timelineContainer?.nativeElement;
-    const content = this.timelineContent?.nativeElement;
-    
-    if (!container || !content) {
-      this.isAutoScrolling = false;
-      return;
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth' });
+      this.isAutoScrolling = true;
+      // Auto-scrolling on the whole page is complex with GSAP, 
+      // but we can simulate a slow scroll if really needed.
+      // Usually, with smooth GSAP scrolling, the user won't need "Auto".
+      // But let's add a simple page scroll.
+      
+      const scrollDuration = (document.documentElement.scrollHeight - window.scrollY) / 100; // approximation
+      gsap.to(window, {
+        scrollTo: { y: "max", autoKill: true },
+        duration: scrollDuration,
+        ease: "none",
+        onComplete: () => { this.isAutoScrolling = false; }
+      });
     }
-    
-    this.scrollInterval = setInterval(() => {
-      if (container && content) {
-        const currentScroll = container.scrollTop;
-        const maxScroll = content.scrollHeight - container.clientHeight;
-        
-        // If we've reached the bottom, stop scrolling
-        if (currentScroll >= maxScroll - 10) {
-          this.clearAutoScroll();
-          return;
-        }
-        
-        // Smooth scrolling
-        container.scrollTop = currentScroll + 1;
-      }
-    }, 30);
   }
 
   clearAutoScroll() {
-    if (this.scrollInterval) {
-      clearInterval(this.scrollInterval);
-      this.scrollInterval = null;
-    }
+    gsap.killTweensOf(window);
     this.isAutoScrolling = false;
-  }
-
-  scrollToProjects() {
-    const projectsSection = document.getElementById('projects-section');
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-  
-  setupTimelineScrollTracking() {
-    const timelineContainer = this.timelineContainer?.nativeElement;
-    const currentYearDisplay = document.getElementById('currentYearDisplay');
-    
-    if (!timelineContainer || !currentYearDisplay) return;
-    
-    // Observer for year markers
-    const yearObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const year = entry.target.getAttribute('data-year');
-          if (year) {
-            currentYearDisplay.textContent = year;
-            currentYearDisplay.style.opacity = '1';
-          }
-        }
-      });
-    }, {
-      root: timelineContainer,
-      rootMargin: '-50% 0px -50% 0px',
-      threshold: 0.1
-    });
-
-    // Observer for reveal on scroll
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const target = entry.target;
-          if (target.classList.contains('timeline-center-line')) {
-            this.isLineVisible = true;
-          } else if (target.getAttribute('data-id')) {
-            const id = target.getAttribute('data-id');
-            this.timeline.forEach(group => {
-              const item = group.items.find(i => i.id === id);
-              if (item) item.visible = true;
-            });
-          }
-        }
-      });
-    }, {
-      root: timelineContainer,
-      rootMargin: '0px 0px -5% 0px',
-      threshold: 0.05
-    });
-    
-    // Observe year groups
-    const yearGroups = timelineContainer.querySelectorAll('.timeline-year-group');
-    yearGroups.forEach((group: Element) => {
-      yearObserver.observe(group);
-    });
-
-    // Observe center line
-    const centerLine = timelineContainer.querySelector('.timeline-center-line');
-    if (centerLine) revealObserver.observe(centerLine);
-
-    // Observe items
-    const items = timelineContainer.querySelectorAll('.timeline-item');
-    items.forEach((item: Element) => {
-      revealObserver.observe(item);
-    });
-    
-    // Set initial year
-    if (yearGroups.length > 0) {
-      const firstYear = yearGroups[0].getAttribute('data-year');
-      if (firstYear) {
-        currentYearDisplay.textContent = firstYear;
-        currentYearDisplay.style.opacity = '1';
-      }
-    }
   }
 
   // Helper to get logo from Logo.dev

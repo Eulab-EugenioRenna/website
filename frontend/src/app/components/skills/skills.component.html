@@ -9,7 +9,7 @@
         <h2 class="text-4xl font-bold mb-12 text-center text-white">Tech Stack & Tools 🛠️</h2>
         
         <div class="flex flex-wrap justify-center gap-6">
-            <div *ngFor="let tech of techStack" class="flex flex-col items-center gap-4 min-w-[120px] p-4 rounded-2xl glass-panel hover:bg-white/10 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group cursor-pointer border border-white/5 hover:-translate-y-1">
+            <div *ngFor="let tech of techStack" class="flex flex-col items-center gap-4 min-w-[120px] p-4 rounded-2xl glass-panel hover:bg-white/10 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group cursor-pointer border border-white/5 hover:-translate-y-1 tech-item">
                 <div class="w-16 h-16 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                     <img *ngIf="getLogo(tech)" [src]="getLogo(tech)" 
                             alt="{{tech.name}}" 
@@ -48,8 +48,8 @@
             </div>
         </div>
         
-        <!-- Timeline Container with auto-scroll -->
-        <div #timelineContainer class="relative max-w-5xl mx-auto overflow-y-auto max-h-[60vh] scrollbar-hide">
+        <!-- Timeline Container -->
+        <div #timelineContainer id="timelineContainer" class="relative max-w-5xl mx-auto py-12">
             <div #timelineContent class="relative">
                 <!-- Enhanced Center Line -->
                 <div class="timeline-center-line" [class.is-visible]="isLineVisible"></div>

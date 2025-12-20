@@ -16,30 +16,26 @@ export class HeroComponent implements AfterViewInit {
   @ViewChild('floatingCircle') floatingCircle!: ElementRef;
 
   ngAfterViewInit() {
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
 
     tl.from(this.heroText.nativeElement, {
-      y: 50,
+      y: 100,
       opacity: 0,
-      duration: 1,
-      ease: 'power3.out'
     })
     .from(this.heroSub.nativeElement, {
-      y: 30,
+      y: 40,
       opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out'
-    }, '-=0.5')
+    }, '-=0.8')
     .from(this.heroBtn.nativeElement, {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'back.out(1.7)'
-    }, '-=0.3');
-
-    gsap.to(this.floatingCircle.nativeElement, {
       y: 20,
-      duration: 2,
+      opacity: 0,
+    }, '-=0.6');
+
+    // Subtle floating animation for background circle
+    gsap.to(this.floatingCircle.nativeElement, {
+      y: 30,
+      x: 20,
+      duration: 4,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut'

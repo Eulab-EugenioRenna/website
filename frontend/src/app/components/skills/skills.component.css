@@ -46,9 +46,7 @@
 
 /* Timeline Container Fixes */
 #timelineContainer {
-    scroll-behavior: smooth;
     position: relative;
-    padding: 2rem 0;
 }
 
 #timelineContent {
