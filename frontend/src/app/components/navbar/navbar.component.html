@@ -22,10 +22,22 @@
     </div>
 
     <!-- Mobile Menu Button -->
-    <button class="md:hidden text-white">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+    <button (click)="toggleMenu()" class="md:hidden text-white relative z-50">
+      <svg *ngIf="!isMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
+      <svg *ngIf="isMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
     </button>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div *ngIf="isMenuOpen" 
+       class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 md:hidden flex flex-col items-center justify-center gap-8 text-2xl font-bold animate-in fade-in duration-300">
+    <a href="#about" (click)="closeMenu()" class="text-white hover:text-blue-400 transition-colors">About</a>
+    <a href="#skills" (click)="closeMenu()" class="text-white hover:text-purple-400 transition-colors">Skills</a>
+    <a href="#projects" (click)="closeMenu()" class="text-white hover:text-pink-400 transition-colors">Projects</a>
+    <a href="#contact" (click)="closeMenu()" class="px-8 py-3 rounded-full bg-blue-600 text-white text-lg">Contattami</a>
   </div>
 </nav>

@@ -170,23 +170,24 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // 4. Animate Tech Stack items
-    const techItems = container.parentElement?.querySelectorAll('.tech-item');
-    if (techItems && techItems.length > 0) {
-      gsap.from(techItems, {
+    // 4. Animate Tech Stack Section Entrance
+    const techSlider = container.parentElement?.querySelector('.logo-slider');
+    if (techSlider) {
+      gsap.from(techSlider, {
         scrollTrigger: {
-          trigger: techItems[0],
+          trigger: techSlider,
           start: 'top 95%',
           toggleActions: 'play none none reverse'
         },
         opacity: 0,
         y: 20,
-        scale: 0.9,
-        duration: 0.5,
-        stagger: 0.05,
+        duration: 0.8,
         ease: 'power2.out'
       });
     }
+
+    // Refresh ScrollTrigger to ensure all positions are correct
+    ScrollTrigger.refresh();
   }
 
   updateYearDisplay(year: string | null, display: HTMLElement | null) {
