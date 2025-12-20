@@ -90,7 +90,15 @@ export class AppComponent implements AfterViewInit {
         mouseY = e.clientY;
       };
 
+      const onTouchMove = (e: TouchEvent) => {
+        if (e.touches.length > 0) {
+          mouseX = e.touches[0].clientX;
+          mouseY = e.touches[0].clientY;
+        }
+      };
+
       window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('touchmove', onTouchMove, { passive: true });
 
       // Use GSAP ticker to move the element for maximum performance
       gsap.ticker.add(() => {

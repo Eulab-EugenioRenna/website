@@ -148,6 +148,22 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100dvh;
 }
 
+/* Reduced Glow Radius for Mobile */
+@media (max-width: 768px) {
+  .mouse-glow-layer::before {
+    width: 600px;
+    height: 600px;
+    left: -300px;
+    top: -300px;
+  }
+  .mouse-glow-layer::after {
+    width: 400px;
+    height: 400px;
+    left: -200px;
+    top: -200px;
+  }
+}
+
 /* Safe Glow Utilities - No clipping issues with overflow:hidden */
 .glow-safe {
   position: absolute;
