@@ -107,8 +107,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     track.addEventListener('mouseenter', () => this.techSliderAnim?.pause());
     track.addEventListener('mouseleave', () => this.techSliderAnim?.resume());
-    track.addEventListener('touchstart', () => this.techSliderAnim?.pause(), { passive: true });
-    track.addEventListener('touchend', () => this.techSliderAnim?.resume(), { passive: true });
+    // Removed touch pause on mobile for continuous autoplay as requested
   }
 
   setupGSAPTimeline() {
@@ -121,15 +120,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     
     if (!container) return;
 
-    // Mobile Safety Fallback: Skip entrance animations if on mobile
-    if (document.documentElement.classList.contains('is-mobile')) {
-      gsap.set(container.querySelectorAll('.timeline-item, .timeline-dot, .timeline-item-content, .logo-slider, .timeline-center-line'), { 
-        opacity: 1, 
-        visibility: 'visible',
-        scale: 1,
-        y: 0 
-      });
-    }
+    // Timeline Revealed for all devices
 
     // 1. Animate Center Line
     const centerLine = container.querySelector('.timeline-center-line');

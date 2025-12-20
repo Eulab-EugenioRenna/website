@@ -59,11 +59,7 @@ export class AppComponent implements AfterViewInit {
     sections.forEach(selector => {
       const element = document.querySelector(selector);
       if (element) {
-        // Fallback for mobile if visibility is an issue
-        if (document.documentElement.classList.contains('is-mobile')) {
-          gsap.set(element, { opacity: 1, y: 0 });
-          return;
-        }
+        // Global Reveal (enabled for both desktop and mobile)
 
         gsap.from(element, {
           scrollTrigger: {
