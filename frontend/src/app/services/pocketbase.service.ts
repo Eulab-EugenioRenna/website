@@ -14,28 +14,11 @@ export class PocketbaseService {
     
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
-      const protocol = window.location.protocol;
-      
-      console.log('--- POCKETBASE TELEMETRY ---');
-      console.log('Location:', window.location.href);
-      console.log('Hostname:', hostname);
-      console.log('Protocol:', protocol);
-      console.log('Port:', window.location.port);
       
       if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-        if (hostname.includes('eulab.cloud')) {
-          // Force port 8090 but allow protocol detection
-          pbUrl = `${protocol}//${hostname}:8090`;
-          
-          // Debugging Tip: If this fails, try changing protocol to 'http:' manually or 'https:'
-          console.warn('Production Mode: If you see "Mixed Content" errors, we need to proxy PB via HTTPS.');
-        } else {
-          pbUrl = `${protocol}//${hostname}${window.location.port ? ':' + window.location.port : ':8090'}`;
-        }
+        // Production URL provided by the user
+        pbUrl = 'https://pb-web.eulab.cloud';
       }
-      
-      console.log('Final PB URL:', pbUrl);
-      console.log('--- END TELEMETRY ---');
     }
     
     this.pb = new PocketBase(pbUrl);
@@ -43,6 +26,12 @@ export class PocketbaseService {
 
   get client() {
     return this.pb;
+  }
+
+  // Centralized Image URL Generator
+  getImageUrl(item: any, fileName: string) {
+    if (!item || !fileName) return '';
+    return this.pb.files.getUrl(item, fileName);
   }
 
   // Filter State

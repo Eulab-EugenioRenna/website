@@ -112,7 +112,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     }
   }
   
-  getImageUrl(collectionId: string, recordId: string, fileName: string) {
-      return `http://localhost:8090/api/files/${collectionId}/${recordId}/${fileName}`;
+  getImageUrl(item: any, fileName: string) {
+      return this.pb.getImageUrl(item, fileName);
   }
 }
