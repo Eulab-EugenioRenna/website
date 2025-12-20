@@ -10,8 +10,24 @@ export class PocketbaseService {
   private pb: PocketBase;
 
   constructor() {
-    // Connect to the backend container (localhost when running in browser)
-    this.pb = new PocketBase('http://localhost:8090');
+    let pbUrl = 'http://localhost:8090';
+    
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        // Assume PB is on the same host, port 8090 (or 443 if proxied, but 8090 is PB default)
+        // If the user has a proxy, they might need to adjust this, but this is better than localhost
+        pbUrl = `${window.location.protocol}//${hostname}${window.location.port ? ':' + window.location.port : ':8090'}`;
+        
+        // If we are on eulab.cloud without a port in the URL, we might still need 8090 
+        // unless it's proxied to 80/443.
+        if (!window.location.port && (hostname.includes('eulab.cloud'))) {
+           pbUrl = `${window.location.protocol}//${hostname}:8090`;
+        }
+      }
+    }
+    
+    this.pb = new PocketBase(pbUrl);
   }
 
   get client() {

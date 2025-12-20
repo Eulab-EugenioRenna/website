@@ -130,7 +130,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Animate the year marker itself
       const marker = group.querySelector('.timeline-year-marker');
-      if (marker) {
+      if (marker && !document.documentElement.classList.contains('is-mobile')) {
         gsap.from(marker, {
           scrollTrigger: {
             trigger: marker,
@@ -152,7 +152,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       const dot = item.querySelector('.timeline-dot');
       const isLeft = item.classList.contains('side-left');
 
-      if (content && dot) {
+      if (content && dot && !document.documentElement.classList.contains('is-mobile')) {
         // Animate content
         gsap.from(content, {
           scrollTrigger: {
@@ -182,7 +182,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 4. Animate Tech Stack Section Entrance
     const techSlider = container.parentElement?.querySelector('.logo-slider');
-    if (techSlider) {
+    if (techSlider && !document.documentElement.classList.contains('is-mobile')) {
       gsap.from(techSlider, {
         scrollTrigger: {
           trigger: techSlider,
@@ -244,14 +244,15 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     return `https://img.logo.dev/${cleanDomain}?token=${token}&size=128&format=png`;
   }
 
-  getPbImageUrl(collectionId: string, recordId: string, fileName: string) {
-    return `http://localhost:8090/api/files/${collectionId}/${recordId}/${fileName}`;
+  getPbImageUrl(item: any, fileName: string) {
+    if (!item || !fileName) return '';
+    return this.pb.client.files.getUrl(item, fileName);
   }
 
   // Smart image resolver: PB > Logo_url > Logo.dev > Fallback
   getLogo(item: any): string {
     if (item.logo) {
-      return this.getPbImageUrl(item.collectionId, item.id, item.logo);
+      return this.getPbImageUrl(item, item.logo);
     }
     if (item.logo_url) {
       return item.logo_url;

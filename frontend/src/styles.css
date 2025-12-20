@@ -127,7 +127,11 @@ h1, h2, h3, h4, h5, h6 {
 .is-mobile .about-card,
 .is-mobile .tech-item,
 .is-mobile .timeline-item,
-.is-mobile .contact-card {
+.is-mobile .contact-card,
+.is-mobile .logo-slider,
+.is-mobile .logo-slide-track,
+.is-mobile .timeline-center-line,
+.is-mobile .timeline-year-marker {
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
