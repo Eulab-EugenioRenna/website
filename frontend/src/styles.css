@@ -266,3 +266,52 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .text-white {
   color: #0f172a;
 }
+
+/* Light Theme Content Sections */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] p {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .bg-slate-900\/50,
+[data-theme="light"] .bg-slate-900\/80,
+[data-theme="light"] .bg-slate-900\/95 {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme="light"] .bg-slate-900 {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"] .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .text-blue-400 {
+  color: #2563eb !important;
+}
+
+[data-theme="light"] .text-blue-300 {
+  color: #3b82f6 !important;
+}
+
+[data-theme="light"] .text-gray-500 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .text-gray-600 {
+  color: #475569 !important;
+}
