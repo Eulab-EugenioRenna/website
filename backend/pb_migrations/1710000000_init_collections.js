@@ -31,7 +31,10 @@ migrate((db) => {
       {
         name: "tags",
         type: "json",
-        required: false
+        required: false,
+        options: {
+          maxSize: 2000000
+        }
       },
       {
         name: "link",
