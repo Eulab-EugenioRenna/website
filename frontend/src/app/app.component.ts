@@ -10,6 +10,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ThemeService } from './services/theme.service';
 import { CustomizerComponent } from './components/customizer/customizer.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,7 +25,8 @@ gsap.registerPlugin(ScrollTrigger);
     SkillsComponent,
     ProjectsComponent,
     ContactComponent,
-    CustomizerComponent
+    CustomizerComponent,
+    FooterComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
