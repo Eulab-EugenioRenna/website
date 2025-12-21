@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
+import { ThemeService, ThemeMode } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,30 @@ import { gsap } from 'gsap';
 })
 export class NavbarComponent {
   isMenuOpen = false;
+  currentTheme: ThemeMode = 'dark';
+
+  constructor(public themeService: ThemeService) {
+    this.themeService.themeMode$.subscribe(mode => {
+      this.currentTheme = mode;
+    });
+  }
+
+  setTheme(mode: ThemeMode) {
+    this.themeService.setTheme(mode);
+  }
+
+  toggleTheme() {
+    const modes: ThemeMode[] = ['dark', 'light', 'system'];
+    const currentIndex = modes.indexOf(this.currentTheme);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    this.setTheme(modes[nextIndex]);
+  }
+
+  toggleCustomizer() {
+    // We'll implement this via an event or direct reference later
+    const event = new CustomEvent('toggle-customizer');
+    window.dispatchEvent(event);
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;

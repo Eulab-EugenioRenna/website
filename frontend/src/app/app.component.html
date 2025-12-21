@@ -1,13 +1,13 @@
-
 <div class="mouse-glow-layer"></div>
 <app-navbar></app-navbar>
-<main>
+
+<main class="relative z-10 pt-20">
   <app-hero></app-hero>
-  <app-about id="about"></app-about>
-  <app-skills id="skills"></app-skills>
-  <app-projects id="projects"></app-projects>
-  <app-contact id="contact"></app-contact>
+  <app-about></app-about>
+  <app-skills></app-skills>
+  <app-projects></app-projects>
+  <app-contact></app-contact>
 </main>
-<footer class="py-10 text-center text-gray-500 text-sm border-t border-white/5 bg-[#0f172a]">
-  <p>© {{ currentYear }} EULAB. All rights reserved.</p>
-</footer>
+
+<app-footer></app-footer>
+<app-customizer></app-customizer>

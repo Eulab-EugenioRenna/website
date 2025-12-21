@@ -8,6 +8,8 @@ import { ProjectsComponent } from './components/projects/projects.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ThemeService } from './services/theme.service';
+import { CustomizerComponent } from './components/customizer/customizer.component';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +23,8 @@ gsap.registerPlugin(ScrollTrigger);
     AboutComponent,
     SkillsComponent,
     ProjectsComponent,
-    ContactComponent
+    ContactComponent,
+    CustomizerComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -30,7 +33,7 @@ export class AppComponent implements AfterViewInit {
   title = 'eulab';
   currentYear = new Date().getFullYear();
 
-  constructor() {
+  constructor(private themeService: ThemeService) {
     this.initGlowEffect();
     this.detectDevice();
   }

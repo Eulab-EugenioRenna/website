@@ -9,12 +9,60 @@
   --font-family-heading: 'Outfit', sans-serif;
 }
 
+:root {
+  /* Core Colors */
+  --bg-color: #0b0f19;
+  --text-color: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --nav-bg: rgba(15, 23, 42, 0.7);
+  
+  /* Brand/Primary */
+  --primary-accent: #3b82f6;
+  --secondary-accent: #8b5cf6;
+  --tertiary-accent: #ec4899;
+  --primary-gradient: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 50%, var(--tertiary-accent) 100%);
+  
+  /* Glow Colors (Safe Glows) */
+  --glow-blue: rgba(37, 99, 235, 0.15);
+  --glow-purple: rgba(139, 92, 246, 0.12);
+  --glow-cyan: rgba(6, 182, 212, 0.12);
+  --glow-green: rgba(34, 197, 94, 0.12);
+
+  --scroll-track: #0f172a;
+  --scroll-thumb: #334155;
+  --scroll-thumb-hover: #475569;
+}
+
+[data-theme="light"] {
+  --bg-color: #f1f5f9;
+  --text-color: #1e293b;
+  --text-muted: #64748b;
+  
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --nav-bg: rgba(241, 245, 249, 0.8);
+  
+  --glow-blue: rgba(37, 99, 235, 0.1);
+  --glow-purple: rgba(139, 92, 246, 0.08);
+  --glow-cyan: rgba(6, 182, 212, 0.08);
+  --glow-green: rgba(34, 197, 94, 0.08);
+
+  --scroll-track: #e2e8f0;
+  --scroll-thumb: #cbd5e1;
+  --scroll-thumb-hover: #94a3b8;
+}
+
 body {
   margin: 0;
   font-family: var(--font-family-sans);
-  background: #0b0f19; /* Deeper, richer dark background */
-  color: #f8fafc;
+  background: var(--bg-color);
+  color: var(--text-color);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Custom Scrollbar */
@@ -22,34 +70,36 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: var(--scroll-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--scroll-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: var(--scroll-thumb-hover);
 }
 
 /* Liquid Glass Utilities - using CSS vars or custom classes */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-nav {
-  background: rgba(15, 23, 42, 0.7);
+  background: var(--nav-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -93,7 +143,7 @@ h1, h2, h3, h4, h5, h6 {
   top: -600px;
   background: radial-gradient(
     circle at center, 
-    rgba(37, 99, 235, 0.15), 
+    var(--glow-blue), 
     transparent 70%
   );
   animation: glow-pulse-perf 6s ease-in-out infinite;
@@ -106,7 +156,7 @@ h1, h2, h3, h4, h5, h6 {
   top: -400px;
   background: radial-gradient(
     circle at center, 
-    rgba(139, 92, 246, 0.1), 
+    var(--glow-purple), 
     transparent 70%
   );
   animation: glow-pulse-perf 6s ease-in-out infinite reverse;
@@ -171,19 +221,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glow-blue {
-  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.15), transparent 70%);
+  background: radial-gradient(circle at center, var(--glow-blue), transparent 70%);
 }
 
 .glow-purple {
-  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.12), transparent 70%);
+  background: radial-gradient(circle at center, var(--glow-purple), transparent 70%);
 }
 
 .glow-cyan {
-  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.12), transparent 70%);
+  background: radial-gradient(circle at center, var(--glow-cyan), transparent 70%);
 }
 
 .glow-green {
-  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.12), transparent 70%);
+  background: radial-gradient(circle at center, var(--glow-green), transparent 70%);
 }
 
 /* Hero Centering and Spacing */
