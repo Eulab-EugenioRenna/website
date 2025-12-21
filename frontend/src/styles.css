@@ -315,3 +315,27 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .text-gray-600 {
   color: #475569 !important;
 }
+
+/* Logo Filters - Invert for Light Mode */
+[data-theme="light"] .logo-filter {
+  filter: invert(1) brightness(0) saturate(100%);
+}
+
+/* Default dark mode - no inversion needed for most logos */
+[data-theme="dark"] .logo-filter {
+  filter: none;
+}
+
+/* Handle brightness 0 case - ensure logos are visible */
+:root[style*="--bg-color: #000000"] .logo-filter,
+:root[style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
+:root[style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
+  filter: invert(1) brightness(2);
+}
+
+/* Light theme with brightness 0 */
+[data-theme="light"][style*="--bg-color: #000000"] .logo-filter,
+[data-theme="light"][style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
+[data-theme="light"][style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
+  filter: invert(0) brightness(2);
+}
