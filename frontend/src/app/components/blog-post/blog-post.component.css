@@ -1,0 +1,67 @@
+/* Post Content Styling Overrides if Prose is not sufficient */
+.post-content ::ng-deep p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.post-content ::ng-deep h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.post-content ::ng-deep h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #e2e8f0;
+}
+
+.post-content ::ng-deep ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.post-content ::ng-deep blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #94a3b8;
+  margin: 1.5rem 0;
+}
+
+.glass-article {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+    
+    .glass-article, .glass-panel {
+       background: rgba(255, 255, 255, 0.8);
+       border: 1px solid rgba(0,0,0,0.1);
+       color: #1e293b; 
+    }
+
+    .post-content ::ng-deep p {
+        color: #334155;
+    }
+    .post-content ::ng-deep h2, .post-content ::ng-deep h3 {
+        color: #0f172a;
+    }
+    .text-gray-300 {
+        color: #475569 !important;
+    }
+    h1 {
+       background-clip: unset;
+       -webkit-background-clip: unset;
+       -webkit-text-fill-color: unset;
+       color: #0f172a;
+    }
+}

@@ -421,9 +421,9 @@ migrate((db) => {
   });
 
   try {
-      dao.saveCollection(projects);
       dao.saveCollection(partners);
       dao.saveCollection(clients);
+      dao.saveCollection(projects); // Depends on clients
       dao.saveCollection(techStack);
       dao.saveCollection(blogPosts);
       dao.saveCollection(testimonials);
@@ -525,7 +525,158 @@ migrate((db) => {
         dao.saveRecord(record);
       });
 
-      console.log("Collections created and Tech Stack seeded successfully");
+      console.log("Seeding additional collections...");
+
+      // Seed Services
+      const serviceItems = [
+        {
+          name: "Sviluppo Web & App",
+          slug: "sviluppo-web-app",
+          description: "Realizziamo applicazioni web moderne, veloci e scalabili su misura per il tuo business.",
+          icon: "💻",
+          features: ["Siti Web Responsive", "Web App Complesse", "E-commerce", "Integrazioni API"],
+          pricing_tiers: {
+            basic: { price: "€1000+", features: ["Landing Page", "SEO Base", "Form Contatto"] },
+            professional: { price: "€2500+", features: ["Sito Multi-pagina", "CMS", "SEO Avanzata"] },
+            enterprise: { price: "Custom", features: ["Web App Full Stack", "Database", "Scalabilità"] }
+          },
+          order: 1
+        },
+        {
+          name: "UI/UX Design",
+          slug: "ui-ux-design",
+          description: "Progettiamo interfacce utente intuitive e accattivanti per garantire la migliore esperienza utente.",
+          icon: "🎨",
+          features: ["Prototipazione", "Wireframing", "Design System", "Mobile First"],
+          order: 2
+        }
+      ];
+
+      serviceItems.forEach(item => {
+        const record = new Record(services);
+        record.set("name", item.name);
+        record.set("slug", item.slug);
+        record.set("description", item.description);
+        record.set("icon", item.icon);
+        if (item.features) record.set("features", item.features);
+        if (item.pricing_tiers) record.set("pricing_tiers", item.pricing_tiers);
+        if (item.order) record.set("order", item.order);
+        dao.saveRecord(record);
+      });
+
+      // Seed Testimonials
+      const testimonialItems = [
+        {
+          client_name: "Marco Rossi",
+          client_company: "Tech Solutions Srl",
+          rating: 5,
+          quote: "Il team di Eulab ha trasformato la nostra visione in realtà. Professionalità e competenza ai massimi livelli.",
+          featured: true,
+          order: 1
+        },
+        {
+          client_name: "Giulia Bianchi",
+          client_company: "Creative Studio",
+          rating: 5,
+          quote: "Un partner affidabile per lo sviluppo tecnologico. Tempi rispettati e qualità codice eccellente.",
+          featured: true,
+          order: 2
+        }
+      ];
+
+      testimonialItems.forEach(item => {
+        const record = new Record(testimonials);
+        record.set("client_name", item.client_name);
+        record.set("client_company", item.client_company);
+        record.set("rating", item.rating);
+        record.set("quote", item.quote);
+        record.set("featured", item.featured);
+        record.set("order", item.order);
+        dao.saveRecord(record);
+      });
+
+      // Seed Blog Posts
+      const blogItems = [
+        {
+          title: "Benvenuti nel nuovo sito Eulab",
+          slug: "benvenuti-eulab",
+          content: "<p>Siamo felici di annunciare il lancio della nostra nuova piattaforma web. Qui troverete tutti i nostri servizi e casi studio.</p>",
+          status: "published",
+          published_date: new Date().toISOString(),
+          tags: ["News", "Azienda"]
+        }
+      ];
+
+      blogItems.forEach(item => {
+        const record = new Record(blogPosts);
+        record.set("title", item.title);
+        record.set("slug", item.slug);
+        record.set("content", item.content);
+        record.set("status", item.status);
+        record.set("published_date", item.published_date);
+        record.set("tags", item.tags);
+        dao.saveRecord(record);
+      });
+
+      // Seed FAQ
+      const faqItems = [
+        {
+          question: "Quanto costa sviluppare un sito web?",
+          answer: "Il costo dipende dalla complessità del progetto. Offriamo soluzioni a partire da pacchetti base fino a sviluppi custom enterprise.",
+          category: "prezzi",
+          order: 1
+        },
+        {
+          question: "Offrite supporto post-lancio?",
+          answer: "Assolutamente sì. Tutti i nostri progetti includono un periodo di garanzia e offriamo piani di manutenzione annuali.",
+          category: "supporto",
+          order: 2
+        }
+      ];
+
+      faqItems.forEach(item => {
+        const record = new Record(faq);
+        record.set("question", item.question);
+        record.set("answer", item.answer);
+        record.set("category", item.category);
+        record.set("order", item.order);
+        dao.saveRecord(record);
+      });
+
+      // Seed Partners
+      const partnerItems = [
+        { name: "Digital Ocean", website: "https://digitalocean.com" }
+      ];
+
+      partnerItems.forEach(item => {
+        const record = new Record(partners);
+        record.set("name", item.name);
+        record.set("website", item.website);
+        dao.saveRecord(record);
+      });
+
+      // Seed Projects
+      const projectItems = [
+        {
+          name: "Eulab Corporate Website",
+          description: "Il nostro sito web aziendale, sviluppato con Angular 19 e PocketBase.",
+          work_date: new Date().toISOString(),
+          tags: ["Angular", "PocketBase", "Tailwind"],
+          link: "https://eulab.cloud"
+        }
+      ];
+
+      projectItems.forEach(item => {
+        const record = new Record(projects);
+        record.set("name", item.name);
+        record.set("description", item.description);
+        record.set("work_date", item.work_date);
+        record.set("tags", item.tags);
+        record.set("link", item.link);
+        dao.saveRecord(record);
+      });
+
+      console.log("Collections created and full Seed completed successfully");
   } catch (err) {
       console.log("Error creating collections (might already exist):", err);
   }

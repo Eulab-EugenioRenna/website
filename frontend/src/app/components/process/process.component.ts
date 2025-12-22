@@ -22,6 +22,8 @@ interface ProcessStep {
 })
 export class ProcessComponent implements OnInit, AfterViewInit {
   @ViewChild('processContainer') processContainer!: ElementRef;
+  @ViewChild('processWrapper') processWrapper!: ElementRef;
+  @ViewChild('progressBar') progressBar!: ElementRef;
 
   steps: ProcessStep[] = [
     {
@@ -86,52 +88,66 @@ export class ProcessComponent implements OnInit, AfterViewInit {
         });
       });
     } else {
-      // Desktop: Horizontal scroll-triggered timeline
-      const container = this.processContainer.nativeElement;
-      
-      // Animate the connecting line
-      gsap.from('.process-line', {
+      // Desktop: Pinned Sequential Timeline with Overlap
+      const wrapper = this.processWrapper.nativeElement;
+      const progressBar = this.progressBar.nativeElement;
+      const cards = wrapper.querySelectorAll('.process-card');
+      const totalSteps = cards.length;
+
+      // 1. PINNING: Create a master timeline that pins the wrapper for enough scroll distance
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: container,
-          start: 'top 70%',
-          end: 'bottom 30%',
-          scrub: 1
-        },
-        scaleX: 0,
-        transformOrigin: 'left center',
-        ease: 'none'
+          trigger: wrapper,
+          start: 'center center', // Pin when center of section hits center of viewport
+          end: '+=4000', // Scroll for 4000px
+          scrub: 0.5, // Smooth scrubbing
+          pin: true,  // Pin the section while animating
+          anticipatePin: 1
+        }
       });
 
-      // Animate each step
-      this.steps.forEach((_, index) => {
-        const step = `.process-step-${index}`;
-        
-        gsap.from(step, {
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          },
-          opacity: 0,
-          y: 50,
-          scale: 0.8,
-          duration: 0.8,
-          ease: 'back.out(1.7)'
-        });
+      // 2. PROGRESS BAR: Fills continuously as we scroll through the pinned area
+      tl.to(progressBar, { height: '100%', duration: 1, ease: 'none' }, 0);
 
-        // Animate the step number
-        gsap.from(`${step} .step-number`, {
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          },
-          scale: 0,
-          rotation: 180,
-          duration: 0.6,
-          delay: 0.2,
-          ease: 'back.out(2)'
-        });
+      // 3. CARDS SEQUENCE: Sequential overlap
+      const stepDuration = 1 / totalSteps; 
+      const markers = wrapper.querySelectorAll('.rounded-full.bg-slate-600');
+
+      cards.forEach((card: any, i: number) => {
+        // Calculate relative start time
+        const startTime = i * stepDuration;
+        const endTime = startTime + stepDuration;
+        
+        // Animate Marker
+        if (markers[i]) {
+            tl.to(markers[i], {
+                backgroundColor: '#3b82f6', // blue-500
+                scale: 1.5,
+                duration: 0.1,
+                ease: 'power1.out'
+            }, startTime);
+        }
+
+        // Entrance: Fade In + Scale Up + Move Up
+        tl.to(card, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: stepDuration * 0.5, // First half of the slot
+          ease: 'power2.out'
+        }, startTime);
+
+        // Exit: Fade Out + Scale Down + Move Up (to clear)
+        if (i < totalSteps) { 
+           tl.to(card, {
+            opacity: 0,
+            scale: 0.9,
+            y: -30,
+            filter: 'blur(5px)',
+            duration: stepDuration * 0.4,
+            ease: 'power2.in'
+          }, endTime - (stepDuration * 0.4)); 
+        }
       });
     }
   }

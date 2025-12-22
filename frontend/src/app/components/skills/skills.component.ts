@@ -215,6 +215,19 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
+    // 5. Global Timeline Visibility Control (Year Display)
+    if (currentYearDisplay) {
+        ScrollTrigger.create({
+            trigger: container,
+            start: 'top top+=200', // When timeline starts entering viewport
+            end: 'bottom top+=100', // When timeline leaves viewport
+            onEnter: () => gsap.to(currentYearDisplay, { opacity: 0.2, duration: 0.3 }),
+            onLeave: () => gsap.to(currentYearDisplay, { opacity: 0, duration: 0.3 }),
+            onEnterBack: () => gsap.to(currentYearDisplay, { opacity: 0.2, duration: 0.3 }),
+            onLeaveBack: () => gsap.to(currentYearDisplay, { opacity: 0, duration: 0.3 }) 
+        });
+    }
+
     // Refresh ScrollTrigger to ensure all positions are correct
     ScrollTrigger.refresh();
   }

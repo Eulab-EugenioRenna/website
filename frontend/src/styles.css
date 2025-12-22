@@ -316,27 +316,38 @@ h1, h2, h3, h4, h5, h6 {
   color: #475569 !important;
 }
 
+[data-theme="light"] .text-gray-200 {
+  color: #334155 !important;
+}
+
+/* Ensure glass panels have enough contrast in light mode */
+[data-theme="light"] .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Softer shadow */
+}
+
 /* Logo Filters - Base logo is dark gray */
 
-/* Dark mode - invert dark gray to white */
+/* Dark mode - make it gray */
 [data-theme="dark"] .logo-filter {
-  filter: invert(1) brightness(0);
+  filter: brightness(0) invert(0.7) !important;
 }
 
-/* Light mode - darken to pure black */
+/* Light mode - make it black */
 [data-theme="light"] .logo-filter {
-  filter: brightness(0);
+  filter: brightness(0) !important;
 }
 
-/* Handle custom brightness 0 background in dark mode */
+/* Handle custom brightness 0 background in dark mode - stay gray */
 [data-theme="dark"]:root[style*="--bg-color: #000000"] .logo-filter,
 [data-theme="dark"]:root[style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
 [data-theme="dark"]:root[style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
-  filter: invert(1) brightness(0);
+  filter: brightness(0) invert(0.7) !important;
 }
 
-/* Light theme with custom brightness */
-[data-theme="light"][style*="--bg-color: #ffffff"] .logo-filter,
-[data-theme="light"][style*="--bg-color: rgb(255, 255, 255)"] .logo-filter {
-  filter: brightness(0);
+/* Light theme with brightness 0 - invert to white/gray */
+[data-theme="light"]:root[style*="--bg-color: #000000"] .logo-filter,
+[data-theme="light"]:root[style*="--bg-color: rgb(0, 0, 0)"] .logo-filter {
+  filter: brightness(0) invert(1) !important;
 }
