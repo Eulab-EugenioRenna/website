@@ -66,7 +66,7 @@ export class BlogComponent implements OnInit {
 
   async loadPosts() {
     try {
-      const data = await this.pb.getBlogPosts(6);
+      const data = await this.pb.getBlogPosts(6) as unknown as BlogPost[];
       this.posts = data.length > 0 ? data : this.fallbackPosts;
       this.extractTags();
     } catch (error) {

@@ -110,7 +110,7 @@ export class FaqComponent implements OnInit {
 
   async loadFaqs() {
     try {
-      const data = await this.pb.getFAQs();
+      const data = await this.pb.getFAQs() as unknown as FAQ[];
       this.faqs = data.length > 0 ? data : this.fallbackFaqs;
       this.filterFaqs();
     } catch (error) {

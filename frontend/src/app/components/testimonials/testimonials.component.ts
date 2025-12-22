@@ -68,7 +68,7 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
 
   async loadTestimonials() {
     try {
-      const data = await this.pb.getTestimonials();
+      const data = await this.pb.getTestimonials() as unknown as Testimonial[];
       this.testimonials = data.length > 0 ? data : this.fallbackTestimonials;
     } catch (error) {
       console.error('Error loading testimonials:', error);

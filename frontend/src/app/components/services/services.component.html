@@ -10,75 +10,88 @@
 
     <!-- Pricing Tier Selector -->
     <div class="flex justify-center gap-4 mb-12">
-      <button *ngFor="let tier of ['basic', 'professional', 'enterprise']"
-              (click)="selectTier(tier)"
-              [class.bg-blue-600]="selectedTier === tier"
-              [class.text-white]="selectedTier === tier"
-              [class.bg-white/5]="selectedTier !== tier"
-              [class.text-gray-400]="selectedTier !== tier"
-              class="px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 border border-white/10">
-        {{getTierLabel(tier)}}
-      </button>
+      @for (tier of ['basic', 'professional', 'enterprise']; track tier) {
+        <button type="button"
+                (click)="selectTier(tier)"
+                [ngClass]="{
+                  'bg-blue-600': selectedTier === tier,
+                  'text-white': selectedTier === tier,
+                  'bg-white/5': selectedTier !== tier,
+                  'text-gray-400': selectedTier !== tier
+                }"
+                class="px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 border border-white/10">
+          {{getTierLabel(tier)}}
+        </button>
+      }
     </div>
 
     <!-- Services Grid -->
-    <div *ngIf="!loading" class="grid md:grid-cols-2 gap-8">
-      <div *ngFor="let service of services" 
-           class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/10">
-        
-        <!-- Icon & Title -->
-        <div class="flex items-start gap-4 mb-6">
-          <div class="text-5xl group-hover:scale-110 transition-transform duration-300">
-            {{service.icon}}
-          </div>
-          <div class="flex-1">
-            <h3 class="text-2xl font-bold text-white mb-2">{{service.name}}</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">{{service.description}}</p>
-          </div>
-        </div>
+    @if (!loading) {
+      <div class="grid md:grid-cols-2 gap-8">
+        @for (service of services; track service.id) {
+          <div class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/10">
+            
+            <!-- Icon & Title -->
+            <div class="flex items-start gap-4 mb-6">
+              <div class="text-5xl group-hover:scale-110 transition-transform duration-300">
+                {{service.icon}}
+              </div>
+              <div class="flex-1">
+                <h3 class="text-2xl font-bold text-white mb-2">{{service.name}}</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">{{service.description}}</p>
+              </div>
+            </div>
 
-        <!-- Features -->
-        <div class="mb-6">
-          <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Cosa Include</h4>
-          <ul class="space-y-2">
-            <li *ngFor="let feature of service.features" class="flex items-start gap-2 text-sm text-gray-300">
-              <span class="text-green-400 mt-0.5">✓</span>
-              <span>{{feature}}</span>
-            </li>
-          </ul>
-        </div>
+            <!-- Features -->
+            <div class="mb-6">
+              <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Cosa Include</h4>
+              <ul class="space-y-2">
+                @for (feature of service.features; track feature) {
+                  <li class="flex items-start gap-2 text-sm text-gray-300">
+                    <span class="text-green-400 mt-0.5">✓</span>
+                    <span>{{feature}}</span>
+                  </li>
+                }
+              </ul>
+            </div>
 
-        <!-- Pricing for Selected Tier -->
-        <div *ngIf="service.pricing_tiers && service.pricing_tiers[selectedTier]" 
-             class="border-t border-white/10 pt-6">
-          <div class="flex items-baseline justify-between mb-4">
-            <span class="text-sm text-gray-400">Piano {{getTierLabel(selectedTier)}}</span>
-            <span class="text-2xl font-bold text-gradient">
-              {{service.pricing_tiers[selectedTier].price}}
-            </span>
+            <!-- Pricing for Selected Tier -->
+            @if (service.pricing_tiers && service.pricing_tiers[selectedTier]) {
+              <div class="border-t border-white/10 pt-6">
+                <div class="flex items-baseline justify-between mb-4">
+                  <span class="text-sm text-gray-400">Piano {{getTierLabel(selectedTier)}}</span>
+                  <span class="text-2xl font-bold text-gradient">
+                    {{service.pricing_tiers[selectedTier]!.price}}
+                  </span>
+                </div>
+                
+                <ul class="space-y-2 mb-6">
+                  @for (feature of service.pricing_tiers[selectedTier]!.features; track feature) {
+                    <li class="flex items-start gap-2 text-xs text-gray-400">
+                      <span class="text-blue-400">→</span>
+                      <span>{{feature}}</span>
+                    </li>
+                  }
+                </ul>
+
+                <a href="#contact" 
+                   class="block w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-center transition-all hover:scale-[1.02] shadow-lg shadow-blue-500/20">
+                  Richiedi Preventivo
+                </a>
+              </div>
+            }
           </div>
-          
-          <ul class="space-y-2 mb-6">
-            <li *ngFor="let feature of service.pricing_tiers[selectedTier].features" 
-                class="flex items-start gap-2 text-xs text-gray-400">
-              <span class="text-blue-400">→</span>
-              <span>{{feature}}</span>
-            </li>
-          </ul>
-
-          <a href="#contact" 
-             class="block w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-center transition-all hover:scale-[1.02] shadow-lg shadow-blue-500/20">
-            Richiedi Preventivo
-          </a>
-        </div>
+        }
       </div>
-    </div>
+    }
 
     <!-- Loading State -->
-    <div *ngIf="loading" class="text-center py-12">
-      <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-400 mt-4">Caricamento servizi...</p>
-    </div>
+    @if (loading) {
+      <div class="text-center py-12">
+        <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-gray-400 mt-4">Caricamento servizi...</p>
+      </div>
+    }
 
     <!-- CTA -->
     <div class="text-center mt-16">

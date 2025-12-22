@@ -147,7 +147,7 @@ export class ServicesComponent implements OnInit {
 
   async loadServices() {
     try {
-      const data = await this.pb.getServices();
+      const data = await this.pb.getServices() as unknown as Service[];
       this.services = data.length > 0 ? data : this.fallbackServices;
     } catch (error) {
       console.error('Error loading services:', error);
@@ -157,8 +157,8 @@ export class ServicesComponent implements OnInit {
     }
   }
 
-  selectTier(tier: 'basic' | 'professional' | 'enterprise') {
-    this.selectedTier = tier;
+  selectTier(tier: string) {
+    this.selectedTier = tier as 'basic' | 'professional' | 'enterprise';
   }
 
   getTierLabel(tier: string): string {

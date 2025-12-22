@@ -1,120 +1,72 @@
 <section class="py-24 relative overflow-hidden" id="blog">
-  <!-- Background Decoration -->
   <div class="glow-safe glow-purple w-[500px] h-[500px] -bottom-24 right-1/4 opacity-40"></div>
-
   <div class="container mx-auto px-6 relative z-10">
     <h2 class="text-4xl font-bold mb-4 text-center text-white">Blog & Insights 📝</h2>
     <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
       Articoli, guide e novità dal mondo tech e digital
     </p>
 
-    <!-- Tag Filter -->
-    <div *ngIf="allTags.length > 0" class="flex flex-wrap justify-center gap-3 mb-12">
-      <button (click)="selectTag(null)"
-              [class.bg-blue-600]="selectedTag === null"
-              [class.text-white]="selectedTag === null"
-              [class.bg-white/5]="selectedTag !== null"
-              [class.text-gray-400]="selectedTag !== null"
-              class="px-4 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
-        Tutti
-      </button>
-      <button *ngFor="let tag of allTags"
-              (click)="selectTag(tag)"
-              [class.bg-blue-600]="selectedTag === tag"
-              [class.text-white]="selectedTag === tag"
-              [class.bg-white/5]="selectedTag !== tag"
-              [class.text-gray-400]="selectedTag !== tag"
-              class="px-4 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
-        {{tag}}
-      </button>
-    </div>
+    @if (allTags.length > 0) {
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <button type="button" 
+                (click)="selectTag(null)"
+                [ngClass]="{
+                  'bg-blue-600': selectedTag === null,
+                  'text-white': selectedTag === null,
+                  'bg-white/5': selectedTag !== null,
+                  'text-gray-400': selectedTag !== null
+                }"
+                class="px-4 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
+          Tutti
+        </button>
+        @for (tag of allTags; track tag) {
+          <button type="button" 
+                  (click)="selectTag(tag)"
+                  [ngClass]="{
+                    'bg-blue-600': selectedTag === tag,
+                    'text-white': selectedTag === tag,
+                    'bg-white/5': selectedTag !== tag,
+                    'text-gray-400': selectedTag !== tag
+                  }"
+                  class="px-4 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
+            {{tag}}
+          </button>
+        }
+      </div>
+    }
 
-    <!-- Blog Posts Grid -->
-    <div *ngIf="!loading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <article *ngFor="let post of filteredPosts" 
-               class="group glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-2 flex flex-col">
-        
-        <!-- Cover Image -->
-        <div class="aspect-video bg-slate-800 relative overflow-hidden">
-          <img *ngIf="getImageUrl(post)" 
-               [src]="getImageUrl(post)" 
-               [alt]="post.title"
-               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-          <div *ngIf="!getImageUrl(post)" 
-               class="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-            <span class="text-6xl opacity-30">📝</span>
-          </div>
-          
-          <!-- Gradient Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-        </div>
-
-        <!-- Content -->
-        <div class="p-6 flex flex-col flex-grow">
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-2 mb-3">
-            <span *ngFor="let tag of post.tags?.slice(0, 3)" 
-                  class="px-2 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-              {{tag}}
-            </span>
-          </div>
-
-          <!-- Title -->
-          <h3 class="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors leading-tight">
-            {{post.title}}
-          </h3>
-
-          <!-- Excerpt -->
-          <p class="text-gray-400 text-sm mb-4 leading-relaxed flex-grow">
-            {{truncateExcerpt(post.excerpt)}}
-          </p>
-
-          <!-- Meta Info -->
-          <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
-            <span *ngIf="post.author" class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-              {{post.author}}
-            </span>
-            <span class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-              </svg>
-              {{formatDate(post.published_date)}}
-            </span>
-          </div>
-
-          <!-- Read More (Future: link to full post) -->
-          <div class="mt-4">
-            <span class="inline-flex items-center gap-2 text-blue-400 font-medium text-sm group-hover:gap-3 transition-all cursor-pointer">
-              Leggi di più
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </span>
-          </div>
-        </div>
-      </article>
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="text-center py-12">
-      <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-400 mt-4">Caricamento articoli...</p>
-    </div>
-
-    <!-- No Posts -->
-    <div *ngIf="!loading && filteredPosts.length === 0" class="text-center py-12">
-      <div class="text-6xl mb-4">📭</div>
-      <p class="text-gray-400">Nessun articolo trovato per questo tag.</p>
-    </div>
-
-    <!-- Note about N8N Webhook -->
-    <div class="mt-12 text-center">
-      <p class="text-xs text-gray-500">
-        💡 Gli articoli vengono aggiornati automaticamente tramite webhook N8N
-      </p>
-    </div>
+    @if (!loading) {
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @for (post of filteredPosts; track post.id) {
+          <article class="group glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-2 flex flex-col">
+            <div class="aspect-video bg-slate-800 relative overflow-hidden">
+              @if (getImageUrl(post)) {
+                <img [src]="getImageUrl(post)" [alt]="post.title" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+              } @else {
+                <div class="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                  <span class="text-6xl opacity-30">📝</span>
+                </div>
+              }
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
+            </div>
+            <div class="p-6 flex flex-col flex-grow">
+              <div class="flex flex-wrap gap-2 mb-3">
+                @for (tag of post.tags?.slice(0, 3); track tag) {
+                  <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">{{tag}}</span>
+                }
+              </div>
+              <h3 class="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors leading-tight">{{post.title}}</h3>
+              <p class="text-gray-400 text-sm mb-4 leading-relaxed flex-grow">{{truncateExcerpt(post.excerpt)}}</p>
+              <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
+                @if (post.author) {
+                  <span class="flex items-center gap-1">{{post.author}}</span>
+                }
+                <span>{{formatDate(post.published_date)}}</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
   </div>
 </section>

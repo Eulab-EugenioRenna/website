@@ -24,63 +24,75 @@
 
     <!-- Category Filter -->
     <div class="flex flex-wrap justify-center gap-3 mb-12">
-      <button *ngFor="let cat of categories"
-              (click)="selectCategory(cat.value)"
-              [class.bg-blue-600]="selectedCategory === cat.value"
-              [class.text-white]="selectedCategory === cat.value"
-              [class.bg-white/5]="selectedCategory !== cat.value"
-              [class.text-gray-400]="selectedCategory !== cat.value"
-              class="px-5 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
-        {{cat.label}}
-      </button>
+      @for (cat of categories; track cat.value) {
+        <button type="button"
+                (click)="selectCategory(cat.value)"
+                [ngClass]="{
+                  'bg-blue-600': selectedCategory === cat.value,
+                  'text-white': selectedCategory === cat.value,
+                  'bg-white/5': selectedCategory !== cat.value,
+                  'text-gray-400': selectedCategory !== cat.value
+                }"
+                class="px-5 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
+          {{cat.label}}
+        </button>
+      }
     </div>
 
     <!-- FAQ Accordion -->
-    <div *ngIf="!loading" class="max-w-3xl mx-auto space-y-4">
-      <div *ngFor="let faq of filteredFaqs; let i = index" 
-           class="glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
-        
-        <!-- Question (Clickable) -->
-        <button (click)="toggleFaq(i)" 
-                class="w-full px-6 py-5 flex items-center justify-between text-left group">
-          <span class="text-lg font-semibold text-white pr-4 group-hover:text-blue-400 transition-colors">
-            {{faq.question}}
-          </span>
-          <svg xmlns="http://www.w3.org/2000/svg" 
-               fill="none" 
-               viewBox="0 0 24 24" 
-               stroke-width="2" 
-               stroke="currentColor" 
-               [class.rotate-180]="expandedIndex === i"
-               class="w-6 h-6 text-blue-400 flex-shrink-0 transition-transform duration-300">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-          </svg>
-        </button>
+    @if (!loading) {
+      <div class="max-w-3xl mx-auto space-y-4">
+        @for (faq of filteredFaqs; track faq.id; let i = $index) {
+          <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
+            
+            <!-- Question (Clickable) -->
+            <button type="button"
+                    (click)="toggleFaq(i)" 
+                    class="w-full px-6 py-5 flex items-center justify-between text-left group">
+              <span class="text-lg font-semibold text-white pr-4 group-hover:text-blue-400 transition-colors">
+                {{faq.question}}
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                   fill="none" 
+                   viewBox="0 0 24 24" 
+                   stroke-width="2" 
+                   stroke="currentColor" 
+                   [class.rotate-180]="expandedIndex === i"
+                   class="w-6 h-6 text-blue-400 flex-shrink-0 transition-transform duration-300">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
 
-        <!-- Answer (Expandable) -->
-        <div [class.max-h-0]="expandedIndex !== i"
-             [class.max-h-96]="expandedIndex === i"
-             class="overflow-hidden transition-all duration-300">
-          <div class="px-6 pb-5 pt-0">
-            <div class="text-gray-300 leading-relaxed border-t border-white/5 pt-4">
-              {{faq.answer}}
+            <!-- Answer (Expandable) -->
+            <div [class.max-h-0]="expandedIndex !== i"
+                 [class.max-h-96]="expandedIndex === i"
+                 class="overflow-hidden transition-all duration-300">
+              <div class="px-6 pb-5 pt-0">
+                <div class="text-gray-300 leading-relaxed border-t border-white/5 pt-4">
+                  {{faq.answer}}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        }
 
-      <!-- No Results -->
-      <div *ngIf="filteredFaqs.length === 0" class="text-center py-12">
-        <div class="text-6xl mb-4">🔍</div>
-        <p class="text-gray-400">Nessuna FAQ trovata. Prova con un'altra ricerca.</p>
+        <!-- No Results -->
+        @if (filteredFaqs.length === 0) {
+          <div class="text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <p class="text-gray-400">Nessuna FAQ trovata. Prova con un'altra ricerca.</p>
+          </div>
+        }
       </div>
-    </div>
+    }
 
     <!-- Loading State -->
-    <div *ngIf="loading" class="text-center py-12">
-      <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-400 mt-4">Caricamento FAQ...</p>
-    </div>
+    @if (loading) {
+      <div class="text-center py-12">
+        <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-gray-400 mt-4">Caricamento FAQ...</p>
+      </div>
+    }
 
     <!-- CTA -->
     <div class="text-center mt-16">
