@@ -1,0 +1,21 @@
+.process-line {
+  will-change: transform;
+}
+
+.step-number {
+  will-change: transform, opacity;
+}
+
+/* Ensure cards don't overflow */
+.glass-panel {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .glass-panel {
+    min-height: auto;
+  }
+}

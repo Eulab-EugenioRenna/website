@@ -1,0 +1,7 @@
+article {
+  transition: all 0.3s ease;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}

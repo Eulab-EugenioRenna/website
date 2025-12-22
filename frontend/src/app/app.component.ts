@@ -11,6 +11,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ThemeService } from './services/theme.service';
 import { CustomizerComponent } from './components/customizer/customizer.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { TrustComponent } from './components/trust/trust.component';
+import { ServicesComponent } from './components/services/services.component';
+import { ProcessComponent } from './components/process/process.component';
+import { TestimonialsComponent } from './components/testimonials/testimonials.component';
+import { BlogComponent } from './components/blog/blog.component';
+import { FaqComponent } from './components/faq/faq.component';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,7 +32,13 @@ gsap.registerPlugin(ScrollTrigger);
     ProjectsComponent,
     ContactComponent,
     CustomizerComponent,
-    FooterComponent
+    FooterComponent,
+    TrustComponent,
+    ServicesComponent,
+    ProcessComponent,
+    TestimonialsComponent,
+    BlogComponent,
+    FaqComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -59,7 +71,19 @@ export class AppComponent implements AfterViewInit {
 
   initGlobalAnimations() {
     // Reveal main sections as they enter the viewport
-    const sections = ['app-hero', 'app-about', 'app-skills', 'app-projects', 'app-contact'];
+    const sections = [
+      'app-hero', 
+      'app-trust',
+      'app-about', 
+      'app-services',
+      'app-process',
+      'app-skills', 
+      'app-projects',
+      'app-testimonials',
+      'app-blog',
+      'app-faq',
+      'app-contact'
+    ];
     
     sections.forEach(selector => {
       const element = document.querySelector(selector);

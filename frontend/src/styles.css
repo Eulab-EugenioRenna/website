@@ -316,26 +316,27 @@ h1, h2, h3, h4, h5, h6 {
   color: #475569 !important;
 }
 
-/* Logo Filters - Invert for Light Mode */
-[data-theme="light"] .logo-filter {
-  filter: invert(1) brightness(0) saturate(100%);
-}
+/* Logo Filters - Base logo is dark gray */
 
-/* Default dark mode - no inversion needed for most logos */
+/* Dark mode - invert dark gray to white */
 [data-theme="dark"] .logo-filter {
-  filter: none;
+  filter: invert(1) brightness(0);
 }
 
-/* Handle brightness 0 case - ensure logos are visible */
-:root[style*="--bg-color: #000000"] .logo-filter,
-:root[style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
-:root[style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
-  filter: invert(1) brightness(2);
+/* Light mode - darken to pure black */
+[data-theme="light"] .logo-filter {
+  filter: brightness(0);
 }
 
-/* Light theme with brightness 0 */
-[data-theme="light"][style*="--bg-color: #000000"] .logo-filter,
-[data-theme="light"][style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
-[data-theme="light"][style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
-  filter: invert(0) brightness(2);
+/* Handle custom brightness 0 background in dark mode */
+[data-theme="dark"]:root[style*="--bg-color: #000000"] .logo-filter,
+[data-theme="dark"]:root[style*="--bg-color: rgb(0, 0, 0)"] .logo-filter,
+[data-theme="dark"]:root[style*="--bg-color: rgba(0, 0, 0"] .logo-filter {
+  filter: invert(1) brightness(0);
+}
+
+/* Light theme with custom brightness */
+[data-theme="light"][style*="--bg-color: #ffffff"] .logo-filter,
+[data-theme="light"][style*="--bg-color: rgb(255, 255, 255)"] .logo-filter {
+  filter: brightness(0);
 }

@@ -1,0 +1,97 @@
+<section class="py-24 relative overflow-hidden bg-slate-900/50" id="faq">
+  <!-- Background Decoration -->
+  <div class="glow-safe glow-blue w-[500px] h-[500px] top-1/4 left-1/4 opacity-30"></div>
+
+  <div class="container mx-auto px-6 relative z-10">
+    <h2 class="text-4xl font-bold mb-4 text-center text-white">Domande Frequenti ❓</h2>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
+      Trova risposte alle domande più comuni sui nostri servizi
+    </p>
+
+    <!-- Search Bar -->
+    <div class="max-w-2xl mx-auto mb-8">
+      <div class="relative">
+        <input type="text" 
+               [(ngModel)]="searchQuery"
+               (ngModelChange)="onSearchChange()"
+               placeholder="Cerca nelle FAQ..."
+               class="w-full px-6 py-4 pl-12 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+      <button *ngFor="let cat of categories"
+              (click)="selectCategory(cat.value)"
+              [class.bg-blue-600]="selectedCategory === cat.value"
+              [class.text-white]="selectedCategory === cat.value"
+              [class.bg-white/5]="selectedCategory !== cat.value"
+              [class.text-gray-400]="selectedCategory !== cat.value"
+              class="px-5 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
+        {{cat.label}}
+      </button>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div *ngIf="!loading" class="max-w-3xl mx-auto space-y-4">
+      <div *ngFor="let faq of filteredFaqs; let i = index" 
+           class="glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
+        
+        <!-- Question (Clickable) -->
+        <button (click)="toggleFaq(i)" 
+                class="w-full px-6 py-5 flex items-center justify-between text-left group">
+          <span class="text-lg font-semibold text-white pr-4 group-hover:text-blue-400 transition-colors">
+            {{faq.question}}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" 
+               fill="none" 
+               viewBox="0 0 24 24" 
+               stroke-width="2" 
+               stroke="currentColor" 
+               [class.rotate-180]="expandedIndex === i"
+               class="w-6 h-6 text-blue-400 flex-shrink-0 transition-transform duration-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        <!-- Answer (Expandable) -->
+        <div [class.max-h-0]="expandedIndex !== i"
+             [class.max-h-96]="expandedIndex === i"
+             class="overflow-hidden transition-all duration-300">
+          <div class="px-6 pb-5 pt-0">
+            <div class="text-gray-300 leading-relaxed border-t border-white/5 pt-4">
+              {{faq.answer}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="filteredFaqs.length === 0" class="text-center py-12">
+        <div class="text-6xl mb-4">🔍</div>
+        <p class="text-gray-400">Nessuna FAQ trovata. Prova con un'altra ricerca.</p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-gray-400 mt-4">Caricamento FAQ...</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-16">
+      <p class="text-gray-400 mb-6">Non hai trovato la risposta che cercavi?</p>
+      <a href="#contact" 
+         class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all hover:scale-105 shadow-lg shadow-blue-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+        Contattaci Direttamente
+      </a>
+    </div>
+  </div>
+</section>

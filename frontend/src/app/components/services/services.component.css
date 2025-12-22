@@ -1,0 +1,12 @@
+/* Service cards min height for consistency */
+.glass-panel {
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .glass-panel {
+    min-height: auto;
+  }
+}

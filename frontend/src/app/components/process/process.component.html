@@ -1,0 +1,68 @@
+<section class="py-24 relative overflow-hidden" id="process">
+  <!-- Background Decoration -->
+  <div class="glow-safe glow-purple w-[500px] h-[500px] -top-24 left-1/2 opacity-40"></div>
+
+  <div class="container mx-auto px-6 relative z-10">
+    <h2 class="text-4xl font-bold mb-4 text-center text-white">Come Lavoriamo 🎯</h2>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">
+      Un processo chiaro e trasparente, dalla prima call al supporto continuo
+    </p>
+
+    <!-- Desktop: Horizontal Timeline -->
+    <div #processContainer class="hidden md:block relative">
+      <!-- Connecting Line -->
+      <div class="process-line absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-30"></div>
+
+      <div class="flex justify-between items-start gap-4 relative">
+        <div *ngFor="let step of steps; let i = index" 
+             [class]="'process-step-' + i + ' flex-1 relative'"
+             class="flex flex-col items-center">
+          
+          <!-- Step Number Circle -->
+          <div class="step-number w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl mb-6 shadow-lg shadow-blue-500/30 relative z-10">
+            {{step.number}}
+          </div>
+
+          <!-- Step Card -->
+          <div class="glass-panel rounded-2xl p-6 border border-white/10 hover:border-blue-500/30 transition-all duration-300 w-full group hover:shadow-lg hover:shadow-blue-500/10">
+            <div class="text-4xl mb-4 text-center group-hover:scale-110 transition-transform duration-300">
+              {{step.icon}}
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 text-center">{{step.title}}</h3>
+            <p class="text-sm text-gray-400 mb-4 text-center leading-relaxed">{{step.description}}</p>
+            <div class="text-xs text-blue-400 font-medium text-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 inline-block w-full">
+              ⏱️ {{step.duration}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: Vertical Timeline -->
+    <div class="md:hidden space-y-8">
+      <div *ngFor="let step of steps; let i = index" 
+           [class]="'process-step-' + i"
+           class="flex gap-4">
+        
+        <!-- Step Number -->
+        <div class="flex-shrink-0">
+          <div class="step-number w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30">
+            {{step.number}}
+          </div>
+          <!-- Connecting Line (except last) -->
+          <div *ngIf="i < steps.length - 1" class="w-0.5 h-16 bg-gradient-to-b from-blue-500 to-purple-500 opacity-30 mx-auto mt-2"></div>
+        </div>
+
+        <!-- Step Content -->
+        <div class="flex-1 glass-panel rounded-2xl p-6 border border-white/10">
+          <div class="text-3xl mb-3">{{step.icon}}</div>
+          <h3 class="text-lg font-bold text-white mb-2">{{step.title}}</h3>
+          <p class="text-sm text-gray-400 mb-3 leading-relaxed">{{step.description}}</p>
+          <div class="text-xs text-blue-400 font-medium px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 inline-block">
+            ⏱️ {{step.duration}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -178,11 +178,257 @@ migrate((db) => {
       deleteRule: null,
     });
 
+  // 5. BLOG POSTS Collection (N8N Webhook Ready)
+  const blogPosts = new Collection({
+    name: "blog_posts",
+    type: "base",
+    schema: [
+      {
+        name: "title",
+        type: "text",
+        required: true,
+        options: { min: 1, max: 255 }
+      },
+      {
+        name: "slug",
+        type: "text",
+        required: true,
+        options: { min: 1, max: 255, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      },
+      {
+        name: "content",
+        type: "editor", // Rich text editor
+        required: true
+      },
+      {
+        name: "excerpt",
+        type: "text",
+        required: false,
+        options: { max: 500 }
+      },
+      {
+        name: "cover_image",
+        type: "file",
+        required: false,
+        options: {
+          maxSelect: 1,
+          maxSize: 5242880,
+          mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        }
+      },
+      {
+        name: "author",
+        type: "text",
+        required: false,
+        options: { max: 100 }
+      },
+      {
+        name: "published_date",
+        type: "date",
+        required: true
+      },
+      {
+        name: "tags",
+        type: "json",
+        required: false
+      },
+      {
+        name: "status",
+        type: "select",
+        required: true,
+        options: {
+          maxSelect: 1,
+          values: ["draft", "published"]
+        }
+      }
+    ],
+    listRule: "status = 'published'",
+    viewRule: "status = 'published'",
+    createRule: null, // Admin or N8N webhook with auth
+    updateRule: null,
+    deleteRule: null,
+    indexes: [
+      "CREATE INDEX idx_blog_slug ON blog_posts (slug)",
+      "CREATE INDEX idx_blog_status ON blog_posts (status)",
+      "CREATE INDEX idx_blog_date ON blog_posts (published_date)"
+    ]
+  });
+
+  // 6. TESTIMONIALS Collection
+  const testimonials = new Collection({
+    name: "testimonials",
+    type: "base",
+    schema: [
+      {
+        name: "client_name",
+        type: "text",
+        required: true,
+        options: { min: 1, max: 100 }
+      },
+      {
+        name: "client_company",
+        type: "text",
+        required: false,
+        options: { max: 100 }
+      },
+      {
+        name: "client_logo",
+        type: "file",
+        required: false,
+        options: {
+          maxSelect: 1,
+          maxSize: 2097152, // 2MB
+          mimeTypes: ["image/jpeg", "image/png", "image/svg+xml", "image/webp"],
+        }
+      },
+      {
+        name: "rating",
+        type: "number",
+        required: true,
+        options: { min: 1, max: 5 }
+      },
+      {
+        name: "quote",
+        type: "text",
+        required: true,
+        options: { min: 10, max: 500 }
+      },
+      {
+        name: "project_type",
+        type: "text",
+        required: false,
+        options: { max: 100 }
+      },
+      {
+        name: "featured",
+        type: "bool",
+        required: false
+      },
+      {
+        name: "order",
+        type: "number",
+        required: false
+      }
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: null,
+    updateRule: null,
+    deleteRule: null,
+    indexes: [
+      "CREATE INDEX idx_testimonials_featured ON testimonials (featured)",
+      "CREATE INDEX idx_testimonials_order ON testimonials (order)"
+    ]
+  });
+
+  // 7. SERVICES Collection
+  const services = new Collection({
+    name: "services",
+    type: "base",
+    schema: [
+      {
+        name: "name",
+        type: "text",
+        required: true,
+        options: { min: 1, max: 100 }
+      },
+      {
+        name: "slug",
+        type: "text",
+        required: true,
+        options: { min: 1, max: 100, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+      },
+      {
+        name: "description",
+        type: "text",
+        required: true,
+        options: { max: 1000 }
+      },
+      {
+        name: "icon",
+        type: "text",
+        required: false,
+        options: { max: 50 } // Icon name or emoji
+      },
+      {
+        name: "features",
+        type: "json",
+        required: false // Array of feature strings
+      },
+      {
+        name: "pricing_tiers",
+        type: "json",
+        required: false // Object with Basic, Pro, Enterprise tiers
+      },
+      {
+        name: "order",
+        type: "number",
+        required: false
+      }
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: null,
+    updateRule: null,
+    deleteRule: null,
+    indexes: [
+      "CREATE INDEX idx_services_slug ON services (slug)",
+      "CREATE INDEX idx_services_order ON services (order)"
+    ]
+  });
+
+  // 8. FAQ Collection
+  const faq = new Collection({
+    name: "faq",
+    type: "base",
+    schema: [
+      {
+        name: "question",
+        type: "text",
+        required: true,
+        options: { min: 5, max: 300 }
+      },
+      {
+        name: "answer",
+        type: "text",
+        required: true,
+        options: { min: 10, max: 2000 }
+      },
+      {
+        name: "category",
+        type: "select",
+        required: true,
+        options: {
+          maxSelect: 1,
+          values: ["generale", "prezzi", "supporto", "tecnico"]
+        }
+      },
+      {
+        name: "order",
+        type: "number",
+        required: false
+      }
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: null,
+    updateRule: null,
+    deleteRule: null,
+    indexes: [
+      "CREATE INDEX idx_faq_category ON faq (category)",
+      "CREATE INDEX idx_faq_order ON faq (order)"
+    ]
+  });
+
   try {
       dao.saveCollection(projects);
       dao.saveCollection(partners);
       dao.saveCollection(clients);
       dao.saveCollection(techStack);
+      dao.saveCollection(blogPosts);
+      dao.saveCollection(testimonials);
+      dao.saveCollection(services);
+      dao.saveCollection(faq);
       
       // Seed Default Tech Stack
       const techItems = [
@@ -291,6 +537,10 @@ migrate((db) => {
       try { dao.deleteCollection(dao.findCollectionByNameOrId("partners")); } catch(_) {}
       try { dao.deleteCollection(dao.findCollectionByNameOrId("clients")); } catch(_) {}
       try { dao.deleteCollection(dao.findCollectionByNameOrId("tech_stack")); } catch(_) {}
+      try { dao.deleteCollection(dao.findCollectionByNameOrId("blog_posts")); } catch(_) {}
+      try { dao.deleteCollection(dao.findCollectionByNameOrId("testimonials")); } catch(_) {}
+      try { dao.deleteCollection(dao.findCollectionByNameOrId("services")); } catch(_) {}
+      try { dao.deleteCollection(dao.findCollectionByNameOrId("faq")); } catch(_) {}
   } catch (err) {
       console.log("Error reverting migrations:", err);
   }
