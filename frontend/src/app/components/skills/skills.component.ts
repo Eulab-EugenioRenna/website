@@ -18,51 +18,26 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   partners: any[] = [];
   clients: any[] = [];
-  techStack: any[] = [];
   
-  // New Story Milestones
-  storyMilestones = [
-    {
-      year: 2020,
-      title: 'Nascita di EULAB 🚀',
-      description: 'EULAB muove i primi passi con la missione di semplificare la complessità tecnologica per le aziende.',
-      icon: '🌱'
-    },
-    {
-      year: 2021,
-      title: 'Infrastrutture & Cloud ☁️',
-      description: 'Primi grandi progetti di consolidamento server e migrazioni verso architetture cloud sicure.',
-      icon: '🏗️'
-    },
-    {
-      year: 2022,
-      title: 'Espansione Digital 💻',
-      description: 'Lancio della divisione Sviluppo Web per creare ecosistemi digitali integrati e performanti.',
-      icon: '🌐'
-    },
-    {
-      year: 2023,
-      title: 'Intelligenza Artificiale 🤖',
-      description: 'Integrazione dei primi workflow basati su AI e automazione avanzata dei processi.',
-      icon: '✨'
-    },
-    {
-      year: 2024,
-      title: 'Oltre i Confini 📈',
-      description: 'Consolidamento della leadership tecnica con focus su scalabilità, performance e innovazione continua.',
-      icon: '🏆'
-    }
+  // Fallback Tech Stack
+  fallbackTechStack = [
+    { name: 'Angular', website: 'angular.io' },
+    { name: 'PocketBase', website: 'pocketbase.io' },
+    { name: 'Docker', website: 'docker.com' },
+    { name: 'Tailwind CSS', website: 'tailwindcss.com' },
+    { name: 'TypeScript', website: 'typescriptlang.org' },
+    { name: 'Node.js', website: 'nodejs.org' },
+    { name: 'Linux', website: 'linux.org' },
+    { name: 'AWS', website: 'aws.amazon.com' },
+    { name: 'Git', website: 'git-scm.com' },
+    { name: 'GSAP', website: 'greensock.com' },
+    { name: 'Vite', website: 'vitejs.dev' },
+    { name: 'Python', website: 'python.org' }
   ];
   
-  // Legacy, repurposed for story if needed
-  timeline: { year: number, items: any[] }[] = [];
-  
-  // Auto-scroll state
-  isAutoScrolling = false;
-  isLineVisible = false;
+  techStack: any[] = [];
   
   @ViewChild('timelineContainer') timelineContainer!: ElementRef;
-  @ViewChild('timelineContent') timelineContent!: ElementRef;
 
   private scrollTriggers: ScrollTrigger[] = [];
 
@@ -74,6 +49,17 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.clients = await this.pb.getClients();
       this.techStack = await this.pb.getTechStack();
 
+      // Use fallbacks if empty
+      if (this.techStack.length === 0) {
+          this.techStack = this.fallbackTechStack;
+      }
+      
+      // We don't have a hardcoded fallback for clients yet, but at least we can check
+      // For clients, we could possibly duplicate from partners if available
+      if (this.clients.length === 0 && this.partners.length > 0) {
+          this.clients = this.partners;
+      }
+
       setTimeout(() => {
         this.setupGSAPTimeline();
         this.setupClientsSlider();
@@ -81,6 +67,11 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
         
     } catch (error) {
       console.log('Backend not ready or empty', error);
+      this.techStack = this.fallbackTechStack;
+      setTimeout(() => {
+        this.setupGSAPTimeline();
+        this.setupClientsSlider();
+      }, 500);
     }
   }
 
@@ -125,7 +116,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.scrollTriggers = [];
 
     // 4. Animate Tech Stack Section Entrance
-    const techGrid = document.querySelector('.grid-cols-2');
+    const techGrid = document.querySelector('.tech-grid-static');
     if (techGrid) {
       gsap.from(techGrid, {
         scrollTrigger: {
