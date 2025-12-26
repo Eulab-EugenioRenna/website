@@ -1,12 +1,14 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router'; // Added RouterModule
+import { ViewportScroller } from '@angular/common';
 import { gsap } from 'gsap';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule], // Added RouterModule
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -14,10 +16,27 @@ export class NavbarComponent {
   isMenuOpen = false;
   currentTheme: ThemeMode = 'dark';
 
-  constructor(public themeService: ThemeService) {
+  constructor(
+    public themeService: ThemeService,
+    private router: Router,
+    private scroller: ViewportScroller
+  ) {
     this.themeService.themeMode$.subscribe(mode => {
       this.currentTheme = mode;
     });
+  }
+
+  scrollToSection(sectionId: string) {
+    if (this.router.url === '/') {
+       this.scroller.scrollToAnchor(sectionId);
+    } else {
+       this.router.navigate(['/']).then(() => {
+          setTimeout(() => {
+             this.scroller.scrollToAnchor(sectionId);
+          }, 100); // Small delay to allow HomeComponent to verify
+       });
+    }
+    this.closeMenu();
   }
 
   setTheme(mode: ThemeMode) {
