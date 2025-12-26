@@ -14,10 +14,14 @@ export class PocketbaseService {
     
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
       
-      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-        // Production URL provided by the user
+      if (hostname === 'eulab.cloud' || hostname.endsWith('.eulab.cloud')) {
         pbUrl = 'https://pb-web.eulab.cloud';
+      } else if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        // Local network access (IP or local hostname)
+        // Use the same hostname but the default PocketBase port
+        pbUrl = `http://${hostname}:8090`;
       }
     }
     
