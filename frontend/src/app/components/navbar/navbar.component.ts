@@ -27,13 +27,17 @@ export class NavbarComponent {
   }
 
   scrollToSection(sectionId: string) {
-    if (this.router.url === '/') {
+    if (sectionId === 'top') {
+      this.router.navigate(['/']).then(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    } else if (this.router.url === '/') {
        this.scroller.scrollToAnchor(sectionId);
     } else {
        this.router.navigate(['/']).then(() => {
           setTimeout(() => {
              this.scroller.scrollToAnchor(sectionId);
-          }, 100); // Small delay to allow HomeComponent to verify
+          }, 100);
        });
     }
     this.closeMenu();
