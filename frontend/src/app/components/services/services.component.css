@@ -1,6 +1,6 @@
-/* Service cards min height for consistency */
+/* Service cards adjustments */
 .glass-panel {
-  min-height: 600px;
+  min-height: 450px; /* Reduced since detailed info is in modal */
   display: flex;
   flex-direction: column;
 }
@@ -8,5 +8,60 @@
 @media (max-width: 768px) {
   .glass-panel {
     min-height: auto;
+  }
+}
+
+/* Modal Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-fadeInOut {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scaleUp {
+  animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Tier Selector Styles */
+.active-tier {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+/* Custom Scrollbar for Modal Content */
+.max-h-\[90vh\] .overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.max-h-\[90vh\] .overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.max-h-\[90vh\] .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.max-h-\[90vh\] .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Ensure modal is responsive */
+@media (max-width: 767px) {
+  .max-h-\[90vh\] {
+    max-height: 95vh;
+  }
+  
+  .max-h-\[90vh\] .overflow-y-auto {
+    padding-bottom: 2rem;
   }
 }

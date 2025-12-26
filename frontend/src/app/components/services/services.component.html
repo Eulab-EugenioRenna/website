@@ -25,11 +25,11 @@
               </div>
             </div>
 
-            <!-- Features -->
+            <!-- Features Teaser -->
             <div class="mb-6 flex-grow">
-              <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Cosa Include</h4>
+              <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Punti di Forza</h4>
               <ul class="space-y-2">
-                @for (feature of service.features; track feature) {
+                @for (feature of (service.features || []).slice(0, 3); track feature) {
                   <li class="flex items-start gap-2 text-sm text-gray-300">
                     <span class="text-blue-400 mt-0.5">→</span>
                     <span>{{feature}}</span>
@@ -38,13 +38,14 @@
               </ul>
             </div>
 
-            <div class="mt-auto pt-6 border-t border-white/5">
-                <a href="#contact" class="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2 transition-colors">
-                    Relazioni Dettagliate
+            <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                <button (click)="openPricingModal(service)" 
+                        class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center gap-2 transition-colors">
+                    Vedi Piani & Prezzi
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
-                </a>
+                </button>
             </div>
           </div>
         }
@@ -63,5 +64,79 @@
         </button>
       </div>
     }
+  </div>
+
+  <!-- Pricing Modal Overlay -->
+  <div *ngIf="isModalOpen" 
+       class="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 animate-fadeInOut">
+    
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md" (click)="closePricingModal()"></div>
+
+    <!-- Modal Content -->
+    <div class="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-3xl border border-white/10 relative z-10 flex flex-col md:flex-row animate-scaleUp">
+      
+      <!-- Left side: Info & Tier Selector -->
+      <div class="w-full md:w-2/5 p-8 border-r border-white/5 bg-slate-900/40">
+        <button (click)="closePricingModal()" class="md:hidden absolute top-4 right-4 text-gray-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div class="text-5xl mb-6">{{selectedService?.icon}}</div>
+        <h3 class="text-3xl font-bold text-white mb-2">{{selectedService?.name}}</h3>
+        <p class="text-gray-400 text-sm mb-8 leading-relaxed">{{selectedService?.description}}</p>
+
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Scegli il tuo piano</h4>
+          
+          <button *ngFor="let tier of tiers" 
+                  (click)="selectTier(tier)"
+                  [class.active-tier]="selectedTier === tier"
+                  class="w-full p-4 rounded-xl border border-white/5 text-left transition-all duration-300 hover:bg-white/5 group flex items-center justify-between">
+            <div>
+              <span class="block text-sm font-bold" [class.text-blue-400]="selectedTier === tier">{{getTierLabel(tier)}}</span>
+              <span class="text-xs text-gray-500">{{selectedService?.pricing_tiers?.[tier]?.price || 'Custom'}}</span>
+            </div>
+            <div class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center" [class.border-blue-500]="selectedTier === tier">
+              <div class="w-2.5 h-2.5 rounded-full bg-blue-500 scale-0 transition-transform duration-300" [class.scale-100]="selectedTier === tier"></div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right side: Features & CTA -->
+      <div class="w-full md:w-3/5 p-8 overflow-y-auto bg-slate-900/20">
+        <button (click)="closePricingModal()" class="hidden md:block absolute top-6 right-6 text-gray-400 hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div class="mb-8">
+            <div class="flex items-baseline gap-2 mb-4">
+                <span class="text-4xl font-bold text-white">{{selectedService?.pricing_tiers?.[selectedTier]?.price}}</span>
+                <span class="text-gray-500 text-sm" *ngIf="selectedTier !== 'enterprise'">/ a progetto</span>
+            </div>
+            <p class="text-gray-300 text-sm italic">Ideale per: {{selectedTier === 'basic' ? 'Starting small' : selectedTier === 'professional' ? 'Scaling fast' : 'Large businesses'}}</p>
+        </div>
+
+        <div class="space-y-4 mb-8">
+          <h4 class="text-xs font-bold text-white uppercase tracking-widest px-1">Cosa avrai:</h4>
+          <ul class="grid gap-3">
+            <li *ngFor="let feat of (selectedService?.pricing_tiers?.[selectedTier]?.features || selectedService?.features)" 
+                class="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+              <span class="text-blue-400 text-lg">✓</span>
+              <span class="text-sm text-gray-300">{{feat}}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <a href="#contact" (click)="closePricingModal()"
+               class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-center transition-all shadow-lg shadow-blue-900/20">
+               Inizia Ora - Richiedi Info
+            </a>
+            <p class="text-[10px] text-gray-500 text-center uppercase tracking-tighter">Nessun impegno richiesto. Risposta entro 24 ore.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

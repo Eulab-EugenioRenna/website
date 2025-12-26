@@ -13,110 +13,140 @@ export class ServicesComponent implements OnInit {
   services: Service[] = [];
   loading = true;
   showAllServices = false;
+  
+  // Modal State
+  isModalOpen = false;
+  selectedService: any = null;
+  selectedTier: 'basic' | 'professional' | 'enterprise' = 'professional';
+  tiers: ('basic' | 'professional' | 'enterprise')[] = ['basic', 'professional', 'enterprise'];
 
   // Fallback services if PocketBase is empty
   fallbackServices: Service[] = [
     {
       id: '1',
-      name: 'AI & Automazione',
-      slug: 'ai-automazione',
-      description: 'Integrazione di intelligenza artificiale e workflow automatizzati per ottimizzare i processi aziendali',
-      icon: '🤖',
-      features: [
-        'Chatbot AI personalizzati',
-        'Automazione processi con N8N',
-        'Analisi dati con ML',
-        'Integrazione API AI (OpenAI, Claude, etc.)'
-      ],
+      name: 'Modern Web Solutions',
+      slug: 'sviluppo-web-app',
+      description: 'Applicazioni web veloci, scalabili e sicure sviluppate con le ultime tecnologie.',
+      icon: '💻',
+      features: ['Sviluppo Angular/React', 'Integrazioni API complesse', 'Cloud Native Ready', 'SEO Optimization'],
+      pricing_tiers: {
+        basic: { 
+          price: '€1.200+', 
+          features: ['Sito Landing-page', 'SEO Base', 'Hosting 1 Anno inclusi', 'Supporto via Email'] 
+        },
+        professional: { 
+          price: '€3.500+', 
+          features: ['E-commerce / CMS', 'SEO Avanzata', 'Dashboard Admin', 'Supporto Chat H24'] 
+        },
+        enterprise: { 
+          price: 'Custom', 
+          features: ['Architettura Microservizi', 'Multi-tenant', 'Scalabilità infinita', 'SLA Garantito'] 
+        }
+      },
       order: 1,
       created: '',
       updated: ''
     },
     {
       id: '2',
-      name: 'Sviluppo Web App',
-      slug: 'sviluppo-web',
-      description: 'Applicazioni web moderne, performanti e scalabili con tecnologie all\'avanguardia',
-      icon: '💻',
-      features: [
-        'Frontend moderno (Angular, React)',
-        'Backend robusto (Node.js, PocketBase)',
-        'Design responsive',
-        'SEO ottimizzato'
-      ],
+      name: 'Infrastrutture Cloud',
+      slug: 'cloud-infrastructure',
+      description: 'Architetture cloud robuste e scalabili per supportare la crescita della tua azienda.',
+      icon: '☁️',
+      features: ['AWS / GCP Management', 'Docker & Kubernetes', 'CI/CD Pipelines', 'Monitoraggio 24/7'],
+      pricing_tiers: {
+        basic: { 
+          price: '€600+', 
+          features: ['Setup VPS', 'Backup Settimanali', 'Sito Statico', 'Supporto Base'] 
+        },
+        professional: { 
+          price: '€1.800+', 
+          features: ['High Availability', 'Auto-scaling', 'Database Managed', 'Monitoraggio Real-time'] 
+        },
+        enterprise: { 
+          price: 'Custom', 
+          features: ['Multi-region Setup', 'Hybrid Cloud', 'Security Audit Mensili', 'Architettura custom'] 
+        }
+      },
       order: 2,
       created: '',
       updated: ''
     },
     {
       id: '3',
-      name: 'Cloud & Infrastruttura',
-      slug: 'cloud-infrastruttura',
-      description: 'Progettazione e gestione infrastrutture cloud e on-premise sicure e performanti',
-      icon: '☁️',
-      features: [
-        'Setup server cloud (AWS, Azure, DigitalOcean)',
-        'Containerizzazione Docker',
-        'Backup automatici',
-        'Monitoraggio 24/7'
-      ],
+      name: 'Smart Automation & AI',
+      slug: 'ai-automation',
+      description: 'Ottimizza i tuoi processi aziendali con workflow intelligenti e integrazioni AI.',
+      icon: '🤖',
+      features: ['Integrazione LLM (OpenAI)', 'Automazione N8N/Zapier', 'Chatbot Custom', 'Data Analysis'],
+      pricing_tiers: {
+        basic: { 
+          price: '€900+', 
+          features: ['Automazione base', '1 Workflow N8N', 'Email Automation', 'Training base'] 
+        },
+        professional: { 
+          price: '€2.400+', 
+          features: ['Integrazione OpenAI', 'Workflow complessi', 'DB Vector Integration', 'Maintenance 6 mesi'] 
+        },
+        enterprise: { 
+          price: 'Custom', 
+          features: ['Training Modelli Custom', 'AI Interna', 'RAG System Avanzato', 'Consulenza Strategica'] 
+        }
+      },
       order: 3,
       created: '',
       updated: ''
-    },
-    {
-      id: '4',
-      name: 'Assistenza IT',
-      slug: 'assistenza-it',
-      description: 'Supporto tecnico completo per la tua infrastruttura IT aziendale',
-      icon: '🛠️',
-      features: [
-        'Help desk remoto',
-        'Manutenzione sistemi',
-        'Gestione reti aziendali',
-        'Consulenza tecnica'
-      ],
-      order: 4,
-      created: '',
-      updated: ''
-    },
-    {
-        id: '5',
-        name: 'Cybersecurity',
-        slug: 'cybersecurity',
-        description: 'Protezione degli asset digitali e dei dati aziendali',
-        icon: '🛡️',
-        features: [
-          'Vulnerability assessment',
-          'Penetration testing',
-          'Configurazione firewall',
-          'Formazione sicurezza team'
-        ],
-        order: 5,
-        created: '',
-        updated: ''
-      }
+    }
   ];
 
   constructor(private pb: PocketbaseService) {}
 
   async ngOnInit() {
-    await this.loadServices();
-  }
-
-  async loadServices() {
     try {
-      const data = await this.pb.getServices() as unknown as Service[];
-      this.services = data.length > 0 ? data : this.fallbackServices;
+      const records = await this.pb.getServices();
+      this.services = records.map((r: any) => ({
+        ...r,
+        features: Array.isArray(r['features']) ? r['features'] : []
+      })) as unknown as Service[];
+      
+      if (this.services.length === 0) {
+        this.services = this.fallbackServices;
+      }
+      this.loading = false;
     } catch (error) {
       console.error('Error loading services:', error);
       this.services = this.fallbackServices;
-    } finally {
       this.loading = false;
     }
   }
 
   toggleServices() {
     this.showAllServices = !this.showAllServices;
+  }
+
+  openPricingModal(service: any) {
+    this.selectedService = service;
+    this.selectedTier = 'professional';
+    this.isModalOpen = true;
+    document.body.style.overflow = 'hidden'; 
+  }
+
+  closePricingModal() {
+    this.isModalOpen = false;
+    this.selectedService = null;
+    document.body.style.overflow = 'auto'; 
+  }
+
+  selectTier(tier: any) {
+    this.selectedTier = tier;
+  }
+
+  getTierLabel(tier: string): string {
+    switch(tier) {
+      case 'basic': return 'Essential';
+      case 'professional': return 'Growth';
+      case 'enterprise': return 'Scale';
+      default: return tier;
+    }
   }
 }
