@@ -11,6 +11,7 @@ import { ProcessComponent } from '../process/process.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { BlogComponent } from '../blog/blog.component';
 import { FaqComponent } from '../faq/faq.component';
+import { StoryComponent } from '../story/story.component';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -23,12 +24,13 @@ gsap.registerPlugin(ScrollTrigger);
     CommonModule, 
     HeroComponent,
     AboutComponent,
+    StoryComponent,
+    ServicesComponent,
+    ProcessComponent,
     SkillsComponent,
     ProjectsComponent,
     ContactComponent,
     TrustComponent,
-    ServicesComponent,
-    ProcessComponent,
     TestimonialsComponent,
     BlogComponent,
     FaqComponent
@@ -48,11 +50,12 @@ export class HomeComponent implements AfterViewInit {
       'app-hero', 
       'app-trust',
       'app-about', 
+      'app-story',
       'app-services',
       'app-process',
       'app-skills', 
-      'app-projects',
       'app-testimonials',
+      'app-projects',
       'app-blog',
       'app-faq',
       'app-contact'

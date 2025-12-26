@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { ViewportScroller } from '@angular/common';
+
 @Component({
   selector: 'app-about',
   standalone: true,
@@ -13,7 +15,11 @@ gsap.registerPlugin(ScrollTrigger);
   styleUrl: './about.component.css'
 })
 export class AboutComponent implements AfterViewInit {
-  @ViewChild('aboutContent') aboutContent!: ElementRef;
+  constructor(private scroller: ViewportScroller) {}
+
+  scrollToContact() {
+    this.scroller.scrollToAnchor('contact');
+  }
 
   ngAfterViewInit() {
     const cards = document.querySelectorAll('.about-card');

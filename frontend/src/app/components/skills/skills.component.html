@@ -4,60 +4,69 @@
 
   <div class="container mx-auto px-6 relative z-10">
     
-    <!-- Skills / Tech Stack Section (Dynamic Slider) -->
-    <div class="mb-24">
-        <h2 class="text-4xl font-bold mb-12 text-center text-white about-reveal">Tech Stack & Tools 🛠️</h2>
+    <!-- Tech Stack Section (Static Grid) -->
+    <div class="mb-32">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 text-white about-reveal italic">Tech Stack & Tools 🛠️</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto about-reveal">Le tecnologie e i software che utilizziamo ogni giorno per costruire soluzioni d'avanguardia.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 about-reveal">
+            <div *ngFor="let tech of techStack" 
+                 class="flex flex-col items-center gap-4 p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 group cursor-pointer tech-item-static border border-white/5 hover:border-blue-500/30">
+                <div class="w-16 h-16 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                    <img *ngIf="getLogo(tech)" [src]="getLogo(tech)" 
+                            alt="{{tech.name}}" 
+                            class="w-full h-full object-contain"
+                            loading="lazy">
+                    <span *ngIf="!getLogo(tech)" class="text-2xl font-bold text-gray-500">{{tech.name.charAt(0)}}</span>
+                </div>
+                <span class="font-medium text-gray-300 text-xs uppercase tracking-widest group-hover:text-blue-400 transition-colors">{{tech.name}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients Slider (Moving slider logic here) -->
+    <div class="mb-32 border-t border-white/10 pt-24">
+        <h2 class="text-3xl font-bold mb-12 text-center text-white italic">Hanno Scelto EULAB 🤝</h2>
         
         <div class="logo-slider">
-            <div class="logo-slide-track">
+            <div class="logo-slide-track clients-track">
                 <!-- First set of items -->
-                <div *ngFor="let tech of techStack" class="flex flex-col items-center gap-4 min-w-[140px] p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 group cursor-pointer tech-item">
-                    <div class="w-16 h-16 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                        <img *ngIf="getLogo(tech)" [src]="getLogo(tech)" 
-                                alt="{{tech.name}}" 
-                                class="w-full h-full object-contain"
+                <div *ngFor="let client of clients" class="flex flex-col items-center gap-4 min-w-[180px] p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 group cursor-pointer client-item">
+                    <div class="w-24 h-24 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        <img *ngIf="getLogo(client)" [src]="getLogo(client)" 
+                                alt="{{client.name}}" 
+                                class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                                 loading="lazy">
-                        <span *ngIf="!getLogo(tech)" class="text-2xl font-bold text-gray-500">{{tech.name.charAt(0)}}</span>
+                        <span *ngIf="!getLogo(client)" class="text-2xl font-bold text-gray-500">{{client.name.charAt(0)}}</span>
                     </div>
-                    <span class="font-medium text-gray-300 text-sm whitespace-nowrap group-hover:text-blue-400 transition-colors">{{tech.name}}</span>
                 </div>
                 <!-- Duplicate set for infinite scroll -->
-                <div *ngFor="let tech of techStack" class="flex flex-col items-center gap-4 min-w-[140px] p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 group cursor-pointer border border-white/5 tech-item">
-                    <div class="w-16 h-16 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                        <img *ngIf="getLogo(tech)" [src]="getLogo(tech)" 
-                                alt="{{tech.name}}" 
-                                class="w-full h-full object-contain"
+                <div *ngFor="let client of clients" class="flex flex-col items-center gap-4 min-w-[180px] p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 group cursor-pointer client-item">
+                    <div class="w-24 h-24 flex items-center justify-center p-2 bg-white/5 rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        <img *ngIf="getLogo(client)" [src]="getLogo(client)" 
+                                alt="{{client.name}}" 
+                                class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                                 loading="lazy">
-                        <span *ngIf="!getLogo(tech)" class="text-2xl font-bold text-gray-500">{{tech.name.charAt(0)}}</span>
+                        <span *ngIf="!getLogo(client)" class="text-2xl font-bold text-gray-500">{{client.name.charAt(0)}}</span>
                     </div>
-                    <span class="font-medium text-gray-300 text-sm whitespace-nowrap group-hover:text-blue-400 transition-colors">{{tech.name}}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Enhanced Timeline Section -->
-    <div *ngIf="timeline.length > 0" class="border-t border-white/10 pt-20 relative">
-        <div class="flex justify-between items-center mb-16">
-            <h2 class="text-3xl font-bold text-white">Clienti & Collaborazioni 📅</h2>
-            <button (click)="isAutoScrolling ? clearAutoScroll() : startAutoScroll()"
-                    class="px-4 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-white text-sm transition-all flex items-center gap-2">
-                <svg *ngIf="isAutoScrolling" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <svg *ngIf="!isAutoScrolling" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{{isAutoScrolling ? 'Pausa' : 'Auto'}}</span>
-            </button>
+    <!-- Enhanced Timeline Section (Now for Story) -->
+    <div class="border-t border-white/10 pt-24 relative" id="story">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-white mb-4 italic">La Nostra Storia ✨</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto italic">Dal primo codice all'innovazione quotidiana. Un viaggio fatto di sfide, crescita e tecnologia.</p>
         </div>
         
-        <!-- Fixed Year Display at Top -->
+        <!-- Center Line -->
         <div class="fixed top-24 left-0 right-0 z-20 pointer-events-none">
             <div class="container mx-auto px-6">
                 <div id="currentYearDisplay" class="text-center text-6xl font-bold text-blue-400/20 transition-all duration-500 ease-in-out">
-                    <!-- Year will be updated via JavaScript -->
                 </div>
             </div>
         </div>
@@ -65,39 +74,29 @@
         <!-- Timeline Container -->
         <div #timelineContainer id="timelineContainer" class="relative max-w-5xl mx-auto py-12">
             <div #timelineContent class="relative">
-                <!-- Enhanced Center Line -->
                 <div class="timeline-center-line" [class.is-visible]="isLineVisible"></div>
 
-                <div *ngFor="let group of timeline; let i = index" class="timeline-year-group mb-20 relative" [attr.data-year]="group.year">
-                    <!-- Year Marker (Centered) -->
+                <div *ngFor="let milestone of storyMilestones; let i = index" 
+                     class="timeline-year-group mb-20 relative" 
+                     [attr.data-year]="milestone.year">
+                    
+                    <!-- Year Marker -->
                     <div class="flex justify-center mb-16 relative z-10">
                         <div class="px-6 py-2 rounded-full bg-slate-900 border border-blue-500/30 text-blue-400 text-lg font-bold shadow-lg shadow-blue-500/10 backdrop-blur-md timeline-year-marker">
-                            {{group.year}}
+                            {{milestone.year}}
                         </div>
                     </div>
 
-                    <!-- Zig-Zag Layout for Clients -->
-                    <div class="space-y-12">
-                        <div *ngFor="let item of group.items; let j = index" 
-                             [class.side-left]="item.side === 'left'" 
-                             [class.side-right]="item.side === 'right'"
-                             [class.is-visible]="item.visible"
-                             [attr.data-id]="item.id"
-                             class="timeline-item group cursor-pointer"
-                             (click)="filterProjectsByClient(item.id)">
-                            
-                            <!-- Timeline dot -->
-                            <div class="timeline-dot"></div>
-
-                            <div class="timeline-item-content">
-                                <div class="inline-block p-6 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 w-full md:w-auto min-w-[280px]">
-                                    <div class="w-20 h-20 mx-auto flex items-center justify-center mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110">
-                                        <img *ngIf="getLogo(item)" [src]="getLogo(item)" [alt]="item.name" class="max-h-full max-w-full object-contain">
-                                        <span *ngIf="!getLogo(item)" class="text-3xl font-bold text-gray-500 group-hover:text-white">{{item.name.charAt(0)}}</span>
-                                    </div>
-                                    <h3 class="text-xl font-bold text-white mb-2">{{item.name}}</h3>
-                                    <p *ngIf="item.description" class="text-sm text-gray-400 leading-relaxed">{{item.description}}</p>
-                                </div>
+                    <!-- Single Story Card -->
+                    <div class="timeline-item group side-center" 
+                         [class.side-left]="i % 2 === 0" 
+                         [class.side-right]="i % 2 !== 0">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-item-content">
+                            <div class="inline-block p-8 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 max-w-md w-full">
+                                <span class="text-4xl mb-4 block">{{milestone.icon}}</span>
+                                <h3 class="text-2xl font-bold text-white mb-3">{{milestone.title}}</h3>
+                                <p class="text-gray-300 leading-relaxed">{{milestone.description}}</p>
                             </div>
                         </div>
                     </div>
@@ -105,6 +104,5 @@
             </div>
         </div>
     </div>
-
   </div>
 </section>

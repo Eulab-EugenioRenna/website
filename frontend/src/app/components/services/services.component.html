@@ -8,28 +8,11 @@
       Soluzioni complete per trasformare la tua visione in realtà digitale
     </p>
 
-    <!-- Pricing Tier Selector -->
-    <div class="flex justify-center gap-4 mb-12">
-      @for (tier of ['basic', 'professional', 'enterprise']; track tier) {
-        <button type="button"
-                (click)="selectTier(tier)"
-                [ngClass]="{
-                  'bg-blue-600': selectedTier === tier,
-                  'text-white': selectedTier === tier,
-                  'bg-white/5': selectedTier !== tier,
-                  'text-gray-400': selectedTier !== tier
-                }"
-                class="px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 border border-white/10">
-          {{getTierLabel(tier)}}
-        </button>
-      }
-    </div>
-
     <!-- Services Grid -->
     @if (!loading) {
-      <div class="grid md:grid-cols-2 gap-8">
-        @for (service of services; track service.id) {
-          <div class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/10">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-500">
+        @for (service of (showAllServices ? services : services.slice(0, 3)); track service.id) {
+          <div class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/10 flex flex-col h-full animate-fadeIn">
             
             <!-- Icon & Title -->
             <div class="flex items-start gap-4 mb-6">
@@ -43,66 +26,42 @@
             </div>
 
             <!-- Features -->
-            <div class="mb-6">
+            <div class="mb-6 flex-grow">
               <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Cosa Include</h4>
               <ul class="space-y-2">
                 @for (feature of service.features; track feature) {
                   <li class="flex items-start gap-2 text-sm text-gray-300">
-                    <span class="text-green-400 mt-0.5">✓</span>
+                    <span class="text-blue-400 mt-0.5">→</span>
                     <span>{{feature}}</span>
                   </li>
                 }
               </ul>
             </div>
 
-            <!-- Pricing for Selected Tier -->
-            @if (service.pricing_tiers && service.pricing_tiers[selectedTier]) {
-              <div class="border-t border-white/10 pt-6">
-                <div class="flex items-baseline justify-between mb-4">
-                  <span class="text-sm text-gray-400">Piano {{getTierLabel(selectedTier)}}</span>
-                  <span class="text-2xl font-bold text-gradient">
-                    {{service.pricing_tiers[selectedTier]!.price}}
-                  </span>
-                </div>
-                
-                <ul class="space-y-2 mb-6">
-                  @for (feature of service.pricing_tiers[selectedTier]!.features; track feature) {
-                    <li class="flex items-start gap-2 text-xs text-gray-400">
-                      <span class="text-blue-400">→</span>
-                      <span>{{feature}}</span>
-                    </li>
-                  }
-                </ul>
-
-                <a href="#contact" 
-                   class="block w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-center transition-all hover:scale-[1.02] shadow-lg shadow-blue-500/20">
-                  Richiedi Preventivo
+            <div class="mt-auto pt-6 border-t border-white/5">
+                <a href="#contact" class="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2 transition-colors">
+                    Relazioni Dettagliate
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
                 </a>
-              </div>
-            }
+            </div>
           </div>
         }
       </div>
-    }
 
-    <!-- Loading State -->
-    @if (loading) {
-      <div class="text-center py-12">
-        <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-gray-400 mt-4">Caricamento servizi...</p>
+      <!-- Toggle Button -->
+      <div class="flex justify-center mt-12" *ngIf="services.length > 3">
+        <button (click)="toggleServices()" 
+                class="group flex items-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium transition-all hover:scale-105">
+           <span>{{ showAllServices ? 'Mostra meno' : 'Scopri tutti i servizi' }}</span>
+           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                class="w-5 h-5 transition-transform duration-300"
+                [class.rotate-180]="showAllServices">
+             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+           </svg>
+        </button>
       </div>
     }
-
-    <!-- CTA -->
-    <div class="text-center mt-16">
-      <p class="text-gray-400 mb-6">Non trovi quello che cerchi?</p>
-      <a href="#contact" 
-         class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium transition-all hover:scale-105">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-        </svg>
-        Parliamone insieme
-      </a>
-    </div>
   </div>
 </section>

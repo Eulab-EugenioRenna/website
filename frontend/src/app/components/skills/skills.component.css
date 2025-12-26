@@ -1,4 +1,36 @@
 /* Main Container */
+.tech-item-static {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.tech-item-static:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.client-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1rem;
+}
+
+.clients-track {
+    display: flex;
+    width: max-content;
+}
+
+.timeline-item.side-center {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: center;
+}
+
+/* Redefining side-left and side-right for story cards to be zig-zag but centered logic maybe? */
+/* For now, let's keep them as they are but ensure they look good. */
 .logo-slider {
     position: relative;
     width: 100%;

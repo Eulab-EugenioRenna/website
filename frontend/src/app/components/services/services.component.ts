@@ -12,6 +12,7 @@ import { PocketbaseService, Service } from '../../services/pocketbase.service';
 export class ServicesComponent implements OnInit {
   services: Service[] = [];
   loading = true;
+  showAllServices = false;
 
   // Fallback services if PocketBase is empty
   fallbackServices: Service[] = [
@@ -27,20 +28,6 @@ export class ServicesComponent implements OnInit {
         'Analisi dati con ML',
         'Integrazione API AI (OpenAI, Claude, etc.)'
       ],
-      pricing_tiers: {
-        basic: {
-          price: 'Da €1.500',
-          features: ['Consulenza AI', 'Setup base automazione', '1 workflow personalizzato']
-        },
-        professional: {
-          price: 'Da €3.500',
-          features: ['Chatbot completo', '5+ workflow', 'Integrazione sistemi', 'Training team']
-        },
-        enterprise: {
-          price: 'Su misura',
-          features: ['Soluzione enterprise', 'Workflow illimitati', 'Supporto dedicato', 'SLA garantito']
-        }
-      },
       order: 1,
       created: '',
       updated: ''
@@ -57,20 +44,6 @@ export class ServicesComponent implements OnInit {
         'Design responsive',
         'SEO ottimizzato'
       ],
-      pricing_tiers: {
-        basic: {
-          price: 'Da €2.000',
-          features: ['Landing page', 'Design responsive', 'SEO base', 'Hosting incluso 1 anno']
-        },
-        professional: {
-          price: 'Da €5.000',
-          features: ['Web app completa', 'Dashboard admin', 'Database', 'API custom', 'Manutenzione 6 mesi']
-        },
-        enterprise: {
-          price: 'Su misura',
-          features: ['Architettura scalabile', 'Microservizi', 'CI/CD', 'Supporto 24/7']
-        }
-      },
       order: 2,
       created: '',
       updated: ''
@@ -87,20 +60,6 @@ export class ServicesComponent implements OnInit {
         'Backup automatici',
         'Monitoraggio 24/7'
       ],
-      pricing_tiers: {
-        basic: {
-          price: 'Da €800',
-          features: ['Setup server base', 'Docker setup', 'Backup settimanali', 'Monitoraggio base']
-        },
-        professional: {
-          price: 'Da €2.000',
-          features: ['Cluster Kubernetes', 'CI/CD pipeline', 'Backup giornalieri', 'Monitoring avanzato']
-        },
-        enterprise: {
-          price: 'Su misura',
-          features: ['Multi-cloud', 'Alta disponibilità', 'Disaster recovery', 'DevOps dedicato']
-        }
-      },
       order: 3,
       created: '',
       updated: ''
@@ -117,27 +76,27 @@ export class ServicesComponent implements OnInit {
         'Gestione reti aziendali',
         'Consulenza tecnica'
       ],
-      pricing_tiers: {
-        basic: {
-          price: '€500/mese',
-          features: ['Support 9-18', 'Risposta entro 4h', 'Manutenzione mensile', 'Report mensili']
-        },
-        professional: {
-          price: '€1.200/mese',
-          features: ['Support 8-20', 'Risposta entro 2h', 'Manutenzione settimanale', 'Monitoraggio proattivo']
-        },
-        enterprise: {
-          price: 'Su misura',
-          features: ['Support 24/7', 'Risposta immediata', 'IT Manager dedicato', 'SLA personalizzato']
-        }
-      },
       order: 4,
       created: '',
       updated: ''
-    }
+    },
+    {
+        id: '5',
+        name: 'Cybersecurity',
+        slug: 'cybersecurity',
+        description: 'Protezione degli asset digitali e dei dati aziendali',
+        icon: '🛡️',
+        features: [
+          'Vulnerability assessment',
+          'Penetration testing',
+          'Configurazione firewall',
+          'Formazione sicurezza team'
+        ],
+        order: 5,
+        created: '',
+        updated: ''
+      }
   ];
-
-  selectedTier: 'basic' | 'professional' | 'enterprise' = 'professional';
 
   constructor(private pb: PocketbaseService) {}
 
@@ -157,16 +116,7 @@ export class ServicesComponent implements OnInit {
     }
   }
 
-  selectTier(tier: string) {
-    this.selectedTier = tier as 'basic' | 'professional' | 'enterprise';
-  }
-
-  getTierLabel(tier: string): string {
-    const labels: Record<string, string> = {
-      basic: 'Base',
-      professional: 'Professional',
-      enterprise: 'Enterprise'
-    };
-    return labels[tier] || tier;
+  toggleServices() {
+    this.showAllServices = !this.showAllServices;
   }
 }

@@ -25,23 +25,27 @@ export class TrustComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.animateCounters();
+    this.setupMobileObserver();
   }
 
   animateCounters(): void {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          this.stats.forEach((stat, index) => {
-            gsap.to(this, {
-              duration: 2,
-              ease: 'power2.out',
-              onUpdate: () => {
-                const progress = gsap.getProperty(this, 'progress') as number || 0;
-                this.displayValues[index] = Math.floor(stat.value * progress);
-              },
-              progress: 1
-            });
+          // Use a dummy object for GSAP animation
+          const dummy = { value: 0 };
+          
+          gsap.to(dummy, {
+            value: 1,
+            duration: 2,
+            ease: 'power2.out',
+            onUpdate: () => {
+              this.stats.forEach((stat, index) => {
+                this.displayValues[index] = Math.floor(stat.value * dummy.value);
+              });
+            }
           });
+          
           observer.disconnect();
         }
       });
@@ -51,5 +55,30 @@ export class TrustComponent implements OnInit, AfterViewInit {
     if (element) {
       observer.observe(element);
     }
+  }
+
+  setupMobileObserver(): void {
+    // Only run on mobile
+    if (window.innerWidth >= 768) return;
+
+    const cards = this.el.nativeElement.querySelectorAll('.mobile-trust-card');
+    const options = {
+      root: this.el.nativeElement.querySelector('.trust-container'),
+      threshold: 0.7, // Trigger when 70% visible
+      rootMargin: '0px -20% 0px -20%' // Narrower detection area for center focus
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Remove active from all siblings
+          cards.forEach((c: any) => c.classList.remove('active'));
+          // Add active to current
+          entry.target.classList.add('active');
+        }
+      });
+    }, options);
+
+    cards.forEach((card: any) => observer.observe(card));
   }
 }
