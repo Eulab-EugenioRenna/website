@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router'; // Added RouterModule
 import { ViewportScroller } from '@angular/common';
 import { gsap } from 'gsap';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
   selector: 'app-navbar',
@@ -29,16 +32,22 @@ export class NavbarComponent {
   scrollToSection(sectionId: string) {
     if (sectionId === 'top') {
       this.router.navigate(['/']).then(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        gsap.to(window, { duration: 1.2, scrollTo: 0, ease: 'power4.inOut' });
       });
     } else if (this.router.url === '/') {
-       this.scroller.scrollToAnchor(sectionId);
+      const element = document.getElementById(sectionId);
+      if (element) {
+        gsap.to(window, { duration: 1.2, scrollTo: { y: element, offsetY: 80 }, ease: 'power4.inOut' });
+      }
     } else {
-       this.router.navigate(['/']).then(() => {
-          setTimeout(() => {
-             this.scroller.scrollToAnchor(sectionId);
-          }, 100);
-       });
+      this.router.navigate(['/']).then(() => {
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            gsap.to(window, { duration: 1.2, scrollTo: { y: element, offsetY: 80 }, ease: 'power4.inOut' });
+          }
+        }, 300); // Wait for page transition
+      });
     }
     this.closeMenu();
   }

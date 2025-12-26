@@ -56,13 +56,14 @@
   --scroll-thumb-hover: #94a3b8;
 }
 
-body {
+html, body {
   margin: 0;
   font-family: var(--font-family-sans);
   background: var(--bg-color);
   color: var(--text-color);
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  scroll-behavior: smooth;
 }
 
 /* Custom Scrollbar */
