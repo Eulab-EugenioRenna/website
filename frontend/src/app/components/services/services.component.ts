@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PocketbaseService, Service } from '../../services/pocketbase.service';
+import { ScrollService } from '../../services/scroll.service';
 
 @Component({
   selector: 'app-services',
@@ -99,7 +100,10 @@ export class ServicesComponent implements OnInit {
     }
   ];
 
-  constructor(private pb: PocketbaseService) {}
+  constructor(
+    private pb: PocketbaseService,
+    private scrollService: ScrollService
+  ) {}
 
   async ngOnInit() {
     try {
@@ -135,6 +139,11 @@ export class ServicesComponent implements OnInit {
     this.isModalOpen = false;
     this.selectedService = null;
     document.body.style.overflow = 'auto'; 
+  }
+
+  scrollToContact() {
+    this.closePricingModal();
+    this.scrollService.scrollToSection('contact');
   }
 
   selectTier(tier: any) {

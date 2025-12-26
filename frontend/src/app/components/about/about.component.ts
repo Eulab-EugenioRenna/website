@@ -2,10 +2,9 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollService } from '../../services/scroll.service';
 
 gsap.registerPlugin(ScrollTrigger);
-
-import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-about',
@@ -15,10 +14,10 @@ import { ViewportScroller } from '@angular/common';
   styleUrl: './about.component.css'
 })
 export class AboutComponent implements AfterViewInit {
-  constructor(private scroller: ViewportScroller) {}
+  constructor(private scrollService: ScrollService) {}
 
   scrollToContact() {
-    this.scroller.scrollToAnchor('contact');
+    this.scrollService.scrollToSection('contact');
   }
 
   ngAfterViewInit() {
@@ -38,7 +37,7 @@ export class AboutComponent implements AfterViewInit {
       ease: 'power3.out'
     });
 
-    // 2. Individual card reveals for better mobile reliability
+    // Individual card reveals for better mobile reliability
     cards.forEach((card) => {
       gsap.from(card, {
         scrollTrigger: {

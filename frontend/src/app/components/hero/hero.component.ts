@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import gsap from 'gsap';
+import { ScrollService } from '../../services/scroll.service';
+import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-hero',
@@ -14,6 +15,12 @@ export class HeroComponent implements AfterViewInit {
   @ViewChild('heroSub') heroSub!: ElementRef;
   @ViewChild('heroBtn') heroBtn!: ElementRef;
   @ViewChild('floatingCircle') floatingCircle!: ElementRef;
+
+  constructor(private scrollService: ScrollService) {}
+
+  scrollTo(section: string) {
+    this.scrollService.scrollToSection(section);
+  }
 
   ngAfterViewInit() {
     const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });

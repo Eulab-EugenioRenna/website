@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PocketbaseService } from '../../services/pocketbase.service';
+import { ScrollService } from '../../services/scroll.service';
 import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -23,7 +24,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   activeFilterId: string | null = null;
   private filterSub: Subscription | undefined;
 
-  constructor(private pb: PocketbaseService) {}
+  constructor(
+    private pb: PocketbaseService,
+    private scrollService: ScrollService
+  ) {}
 
   async ngOnInit() {
     try {
@@ -53,7 +57,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
 
   animateProjects() {
-    const cards = document.querySelectorAll('.project-card');
+    const cards = document.querySelectorAll('.glass-panel'); // Filter for project cards
     if (cards.length > 0) {
       gsap.from(cards, {
         scrollTrigger: {
@@ -106,10 +110,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
   
   scrollToProjects() {
-    const element = document.getElementById('projects-grid');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    this.scrollService.scrollToSection('projects-grid');
   }
   
   getImageUrl(item: any, fileName: string) {

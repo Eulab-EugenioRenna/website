@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PocketbaseService, FAQ } from '../../services/pocketbase.service';
+import { ScrollService } from '../../services/scroll.service';
 
 @Component({
   selector: 'app-faq',
@@ -102,7 +103,14 @@ export class FaqComponent implements OnInit {
     }
   ];
 
-  constructor(private pb: PocketbaseService) {}
+  constructor(
+    private pb: PocketbaseService,
+    private scrollService: ScrollService
+  ) {}
+
+  scrollToContact() {
+    this.scrollService.scrollToSection('contact');
+  }
 
   async ngOnInit() {
     await this.loadFaqs();
