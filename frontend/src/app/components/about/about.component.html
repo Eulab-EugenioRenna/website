@@ -1,104 +1,85 @@
-<section class="py-24 relative overflow-hidden" id="about">
-  <div class="container mx-auto px-6">
-    <div class="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-      <!-- Image/Visual Column -->
-      <div class="relative">
-        <div class="relative z-10 glass-panel rounded-2xl p-2 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-             <!-- Placeholder for profile image, using a gradient div for now if no image is available -->
-             <div class="aspect-[4/5] bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl overflow-hidden flex items-center justify-center">
-                <span class="text-4xl text-gray-600 font-bold">EULAB</span>
-             </div>
-        </div>
-        <!-- Decorative elements -->
-        <div class="glow-safe glow-blue w-64 h-64 -top-16 -left-16"></div>
-        <div class="glow-safe glow-purple w-64 h-64 -bottom-16 -right-16"></div>
-      </div>
+<section class="py-24 bg-slate-900 overflow-hidden relative" id="about">
+  <!-- Decorative background element -->
+  <div class="glow-safe glow-blue w-[600px] h-[600px] -top-48 -left-48 opacity-40"></div>
 
-      <!-- Content Column -->
-      <div class="mt-4 md:mt-0">
-        <h2 class="text-3xl md:text-5xl font-bold mb-4 md:mb-8 tracking-tight about-reveal text-center md:text-left">La Visione</h2>
-        <h3 class="text-xl md:text-2xl text-blue-400 mb-4 md:mb-8 font-medium display-text about-reveal text-center md:text-left">Soluzioni IT & Innovazione Tecnologica 🚀</h3>
-        
-        <div class="space-y-3 text-gray-300 leading-relaxed mb-6 md:mb-12 about-reveal text-base md:text-lg">
-          <p>
-            Oltre la tecnica, offriamo un approccio di <strong>problem solving creativo</strong> 💡. Con anni di esperienza sul campo, operiamo con disinvoltura tra infrastrutture fisiche e architetture cloud, portando l'innovazione dell'AI 🤖 e la precisione dell'automazione in ogni progetto.
-          </p>
-          <p>
-            Dalla gestione di data center critici alla creazione di ecosistemi domotici intelligenti 🏠, l'obiettivo è unico: <strong>costruire sistemi che funzionano in armonia</strong> 🎼.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-6">
-            <!-- 1. AI -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/10 border border-white/10 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group about-card">
-                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
-                <h4 class="font-bold text-xl text-white mb-2">AI 🧠</h4>
-                <p class="text-sm text-gray-300">Sviluppo workflow con intelligenza artificiale ✨</p>
-            </div>
-
-            <!-- 2. Sviluppo Web App -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/10 border border-white/10 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group about-card">
-                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                </div>
-                <h4 class="font-bold text-xl text-white mb-2">Sviluppo Web App 💻</h4>
-                <p class="text-sm text-gray-300">Full stack 🌐</p>
-            </div>
-
-            <!-- 3. Sistemi Cloud e on-premise -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/10 border border-white/10 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-300 group about-card">
-                <div class="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                    </svg>
-                </div>
-                <h4 class="font-bold text-xl text-white mb-2">Sistemi Cloud e On-Premise ☁️</h4>
-                <p class="text-sm text-gray-300">Docker, Server, NAS e Reti 🖥️</p>
-            </div>
-
-            <!-- 4. Assistenza IT Specialist -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/10 border border-white/10 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 group about-card">
-                <div class="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </div>
-                <h4 class="font-bold text-xl text-white mb-2">Assistenza IT Specialist 🛠️</h4>
-                <p class="text-sm text-gray-300">Supporto Tecnico & Consulenza 🤝</p>
-            </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- New CTA: Non trovi quello che cerchi? -->
-    <div class="mt-20 relative z-20">
-      <div class="glass-panel p-8 md:p-12 rounded-3xl border border-white/10 text-center relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500">
-        <!-- Background decoration -->
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 group-hover:opacity-100 opacity-50 transition-opacity duration-500"></div>
-        <div class="glow-safe glow-blue w-96 h-96 -top-48 -left-48 opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-
-        <div class="relative z-10 flex flex-col items-center">
-            <h3 class="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 mb-4">
-                Non trovi quello che cerchi? 🧐
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      
+      <!-- Content Side -->
+      <div class="space-y-10">
+        <div class="about-reveal">
+            <h2 class="text-[10px] items-center gap-2 uppercase tracking-[0.3em] text-blue-500 font-bold mb-6 flex">
+                <span class="w-10 h-[1px] bg-blue-500/50"></span>
+                Chi Siamo
+            </h2>
+            <h3 class="text-4xl md:text-5xl font-bold text-white leading-tight italic">
+              Trasformiamo Visioni in <br/>
+              <span class="text-blue-500">Eccellenza Digitale</span> 💎
             </h3>
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
-                Ogni progetto è unico. Parliamo insieme della tua idea e costruiamo una soluzione su misura per le tue esigenze specifiche.
-            </p>
-            <a (click)="scrollToContact()" class="cursor-pointer inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-slate-900 font-bold hover:bg-blue-50 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-white/10">
-                <span>Parliamone Insieme</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-            </a>
+        </div>
+
+        <p class="text-gray-400 text-lg leading-relaxed about-reveal">
+          EULAB non è solo uno studio di sviluppo, è il tuo partner strategico nell'era dell'innovazione. 
+          Combiniamo ingegneria software di alto livello con una visione imprenditoriale moderna per 
+          costruire soluzioni che non solo funzionano, ma scalano e dominano.
+        </p>
+
+        <!-- Dynamic Stats with Signals -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 pt-8 about-reveal">
+          @for (stat of stats(); track stat.label) {
+            <div class="space-y-2">
+              <span class="text-3xl font-bold text-white block">{{stat.value}}</span>
+              <span class="text-[10px] uppercase tracking-wider text-gray-500 font-bold">{{stat.label}}</span>
+            </div>
+          }
+        </div>
+
+        <div class="pt-10 about-reveal">
+          <button (click)="scrollToContact()" 
+             class="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-blue-900/30 uppercase tracking-widest text-xs flex items-center gap-4">
+            Inizia il Percorso
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards Side -->
+      <div class="grid gap-6">
+        <div class="about-card p-10 rounded-[2.5rem] bg-slate-900/50 backdrop-blur-xl border border-white/5 hover:border-blue-500/30 transition-all duration-500 group">
+          <div class="w-14 h-14 rounded-2xl bg-blue-600/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="text-3xl">🚀</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mb-4">Velocità & Performance</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Ogni linea di codice è ottimizzata per garantire tempi di caricamento istantanei e fluidità assoluta su ogni dispositivo.
+          </p>
+        </div>
+
+        <div class="about-card p-10 rounded-[2.5rem] bg-slate-900/50 backdrop-blur-xl border border-white/5 hover:border-blue-500/30 transition-all duration-500 group md:translate-x-12">
+          <div class="w-14 h-14 rounded-2xl bg-purple-600/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+            <span class="text-3xl">🛡️</span>
+          </div>
+          <h4 class="text-xl font-bold text-white mb-4">Sicurezza & Privacy</h4>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Proteggiamo i tuoi dati e quelli dei tuoi clienti con i più elevati standard di sicurezza e crittografia moderna.
+          </p>
         </div>
       </div>
     </div>
 
+    <!-- Additional CTA Banner -->
+     <div class="mt-32 p-10 md:p-16 rounded-[3rem] bg-gradient-to-br from-blue-600 to-blue-800 flex flex-col md:flex-row items-center justify-between gap-10 about-reveal shadow-2xl relative overflow-hidden">
+        <div class="glow-safe bg-white/20 w-96 h-96 -bottom-32 -right-32"></div>
+        <div class="relative z-10 max-w-xl">
+            <h4 class="text-3xl font-bold text-white mb-4">Non hai trovato quello che cerchi?</h4>
+            <p class="text-blue-100/80 font-medium">Siamo pronti ad ascoltare le tue idee più folli e trasformarle in realtà. Parliamone ora!</p>
+        </div>
+        <button (click)="scrollToContact()" 
+                class="relative z-10 px-12 py-5 bg-white text-blue-600 font-bold rounded-2xl hover:scale-105 transition-transform active:scale-95 shadow-xl uppercase tracking-widest text-xs">
+            Contattaci Ora
+        </button>
+     </div>
   </div>
 </section>

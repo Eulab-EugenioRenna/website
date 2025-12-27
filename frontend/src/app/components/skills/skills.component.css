@@ -1,13 +1,47 @@
 /* Main Container */
-.tech-item-static {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+/* (Unused .tech-item-static styles removed) */
+
+/* Tech Wall Layout */
+.tech-wall {
+    perspective: 1000px;
 }
 
-.tech-item-static:hover {
-    transform: translateY(-5px);
+.tech-item-wrapper {
+    cursor: pointer;
+    /* Only transition properties that GSAP doesn't touch during initial animation if possible, 
+       or use long durations to let GSAP finish. 
+       Actually, GSAP will handle the initial entry, then these CSS transitions take over for hover.
+    */
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.tech-icon {
+    /* GSAP will animate opacity from 0 to 1 on .tech-item-wrapper.
+       We want to transition filter and opacity for the hover effect on the icon itself.
+    */
+    filter: grayscale(100%) opacity(0.5);
+    transition: filter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tech-item-wrapper:hover .tech-icon {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.1);
+}
+
+.tech-icon-container {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.tech-item-wrapper:hover .tech-icon-container {
     background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(59, 130, 246, 0.1);
 }
 
 .client-item {

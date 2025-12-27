@@ -1,12 +1,14 @@
-<section class="py-24 relative overflow-hidden" id="process">
+<section class="py-24 relative overflow-hidden bg-slate-900" id="process">
   <!-- Background Decoration -->
   <div class="glow-safe glow-purple w-[500px] h-[500px] -top-24 left-1/2 opacity-40"></div>
 
   <div class="container mx-auto px-6 relative z-10">
-    <h2 class="text-4xl font-bold mb-4 text-center text-white">Come Lavoriamo 🎯</h2>
-    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">
-      Un processo chiaro e trasparente, dalla prima call al supporto continuo
-    </p>
+    <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4 text-white italic">Come Lavoriamo 🎯</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">
+          Un processo chiaro e trasparente, dalla prima call al supporto continuo
+        </p>
+    </div>
 
     <!-- Desktop: Pinned Scroll Timeline -->
     <div class="hidden md:flex relative h-screen w-full items-center justify-center overflow-hidden" #processWrapper>
@@ -18,14 +20,16 @@
           
           <!-- Step Markers -->
           <div class="absolute inset-0 flex flex-col justify-between items-center h-full py-2 z-20 pointer-events-none">
-             <div *ngFor="let step of steps" class="w-2 h-2 rounded-full bg-slate-600 transition-colors duration-300"></div>
+             @for (step of steps(); track step.number) {
+                <div class="w-2 h-2 rounded-full bg-slate-600 transition-colors duration-300 marker-dot"></div>
+             }
           </div>
         </div>
 
-            <!-- Steps Container -->
-            <div class="relative w-[700px] h-[500px]">
-                <div *ngFor="let step of steps; let i = index" 
-                     class="process-card absolute inset-0 flex flex-col items-center justify-center p-8 glass-panel rounded-2xl border border-white/10 shadow-2xl opacity-0 translate-y-20 scale-90"
+        <!-- Steps Container -->
+        <div class="relative w-[700px] h-[500px]">
+            @for (step of steps(); track step.number; let i = $index) {
+                <div [class]="'process-card absolute inset-0 flex flex-col items-center justify-center p-8 glass-panel rounded-2xl border border-white/10 shadow-2xl opacity-0 translate-y-20 scale-90'"
                      [attr.data-index]="i">
                     
                     <div class="text-6xl mb-6 p-4 rounded-full bg-slate-800/50 shadow-inner">
@@ -40,35 +44,37 @@
                         ⏱️ Durata stimata: <span class="text-blue-300 font-semibold">{{step.duration}}</span>
                     </div>
                 </div>
-            </div>
+            }
         </div>
+      </div>
     </div>
 
     <!-- Mobile: Vertical Timeline -->
     <div class="md:hidden space-y-8">
-      <div *ngFor="let step of steps; let i = index" 
-           [class]="'process-step-' + i"
-           class="flex gap-4">
-        
-        <!-- Step Number -->
-        <div class="flex-shrink-0">
-          <div class="step-number w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30">
-            {{step.number}}
+      @for (step of steps(); track step.number; let i = $index) {
+        <div [class]="'process-step-' + i" class="flex gap-4">
+          <!-- Step Number -->
+          <div class="flex-shrink-0">
+            <div class="step-number w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30">
+              {{step.number}}
+            </div>
+            <!-- Connecting Line (except last) -->
+            @if (i < steps().length - 1) {
+                <div class="w-0.5 h-16 bg-gradient-to-b from-blue-500 to-purple-500 opacity-30 mx-auto mt-2"></div>
+            }
           </div>
-          <!-- Connecting Line (except last) -->
-          <div *ngIf="i < steps.length - 1" class="w-0.5 h-16 bg-gradient-to-b from-blue-500 to-purple-500 opacity-30 mx-auto mt-2"></div>
-        </div>
 
-        <!-- Step Content -->
-        <div class="flex-1 glass-panel rounded-2xl p-6 border border-white/10">
-          <div class="text-3xl mb-3">{{step.icon}}</div>
-          <h3 class="text-lg font-bold text-white mb-2">{{step.title}}</h3>
-          <p class="text-sm text-gray-400 mb-3 leading-relaxed">{{step.description}}</p>
-          <div class="text-xs text-blue-400 font-medium px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 inline-block">
-            ⏱️ {{step.duration}}
+          <!-- Step Content -->
+          <div class="flex-1 glass-panel rounded-2xl p-6 border border-white/10">
+            <div class="text-3xl mb-3">{{step.icon}}</div>
+            <h3 class="text-lg font-bold text-white mb-2">{{step.title}}</h3>
+            <p class="text-sm text-gray-400 mb-3 leading-relaxed">{{step.description}}</p>
+            <div class="text-xs text-blue-400 font-medium px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 inline-block">
+              ⏱️ {{step.duration}}
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </section>

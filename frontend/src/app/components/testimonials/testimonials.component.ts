@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PocketbaseService, Testimonial } from '../../services/pocketbase.service';
 
@@ -10,13 +10,15 @@ import { PocketbaseService, Testimonial } from '../../services/pocketbase.servic
   styleUrls: ['./testimonials.component.css']
 })
 export class TestimonialsComponent implements OnInit, OnDestroy {
-  testimonials: Testimonial[] = [];
-  loading = true;
-  currentIndex = 0;
-  autoPlayInterval: any;
+  // State using Signals
+  testimonials = signal<Testimonial[]>([]);
+  loading = signal(true);
+  currentIndex = signal(0);
+  
+  private autoPlayInterval: any;
 
   // Fallback testimonials
-  fallbackTestimonials: Testimonial[] = [
+  private fallbackTestimonials: Testimonial[] = [
     {
       id: '1',
       client_name: 'Marco Rossi',
@@ -40,48 +42,32 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
       order: 2,
       created: '',
       updated: ''
-    },
-    {
-      id: '3',
-      client_name: 'Giuseppe Verdi',
-      client_company: 'Manifattura Italiana',
-      rating: 5,
-      quote: 'Supporto tecnico impeccabile e sempre disponibile. Hanno risolto problemi complessi con grande efficienza.',
-      project_type: 'Infrastruttura Cloud',
-      featured: true,
-      order: 3,
-      created: '',
-      updated: ''
     }
   ];
 
   constructor(private pb: PocketbaseService) {}
 
   async ngOnInit() {
-    await this.loadTestimonials();
-    this.startAutoPlay();
+    try {
+      const data = await this.pb.getTestimonials();
+      this.testimonials.set(data.length > 0 ? (data as unknown as Testimonial[]) : this.fallbackTestimonials);
+      this.startAutoPlay();
+    } catch (error) {
+      this.testimonials.set(this.fallbackTestimonials);
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   ngOnDestroy() {
     this.stopAutoPlay();
   }
 
-  async loadTestimonials() {
-    try {
-      const data = await this.pb.getTestimonials() as unknown as Testimonial[];
-      this.testimonials = data.length > 0 ? data : this.fallbackTestimonials;
-    } catch (error) {
-      console.error('Error loading testimonials:', error);
-      this.testimonials = this.fallbackTestimonials;
-    } finally {
-      this.loading = false;
-    }
-  }
-
   startAutoPlay() {
+    this.stopAutoPlay(); // Safety
     this.autoPlayInterval = setInterval(() => {
       this.next();
-    }, 5000);
+    }, 6000);
   }
 
   stopAutoPlay() {
@@ -91,17 +77,22 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
   }
 
   next() {
-    this.currentIndex = (this.currentIndex + 1) % this.testimonials.length;
+    const total = this.testimonials().length;
+    if (total > 0) {
+      this.currentIndex.update(current => (current + 1) % total);
+    }
   }
 
   prev() {
-    this.currentIndex = this.currentIndex === 0 ? this.testimonials.length - 1 : this.currentIndex - 1;
+    const total = this.testimonials().length;
+    if (total > 0) {
+      this.currentIndex.update(current => (current - 1 + total) % total);
+    }
   }
 
   goTo(index: number) {
-    this.currentIndex = index;
-    this.stopAutoPlay();
-    this.startAutoPlay();
+    this.currentIndex.set(index);
+    this.startAutoPlay(); // Restart timer
   }
 
   getStars(rating: number): boolean[] {
@@ -109,9 +100,6 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(testimonial: Testimonial): string {
-    if (testimonial.client_logo) {
-      return this.pb.getImageUrl(testimonial, testimonial.client_logo);
-    }
-    return '';
+    return testimonial.client_logo ? this.pb.getImageUrl(testimonial, testimonial.client_logo) : '';
   }
 }

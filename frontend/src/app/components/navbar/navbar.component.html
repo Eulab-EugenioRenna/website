@@ -1,82 +1,49 @@
-<nav class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300" id="navbar">
-  <div class="container mx-auto px-6 py-5 md:py-6 flex justify-between items-center">
-    <a (click)="scrollToSection('top')" class="flex items-center gap-3 group cursor-pointer">
-      <img src="eulab-logo.png" alt="EULAB Logo" class="h-10 w-auto transition-transform duration-300 group-hover:scale-105 logo-filter">    </a>
-
-    <div class="hidden md:flex gap-8 items-center">
-      <a (click)="scrollToSection('about')" class="text-gray-300 hover:text-white transition-colors relative group cursor-pointer">
-        About
-        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
-      </a>
-      <a (click)="scrollToSection('services')" class="text-gray-300 hover:text-white transition-colors relative group cursor-pointer">
-        Servizi
-        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
-      </a>
-      <a (click)="scrollToSection('skills')" class="text-gray-300 hover:text-white transition-colors relative group cursor-pointer">
-        Tech
-        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-400 transition-all duration-300 group-hover:w-full"></span>
-      </a>
-      <a (click)="scrollToSection('projects')" class="text-gray-300 hover:text-white transition-colors relative group cursor-pointer">
-        Projects
-        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-400 transition-all duration-300 group-hover:w-full"></span>
-      </a>
-      
-      <div class="flex items-center gap-2 border-l border-white/10 pl-4 ml-2">
-        <!-- Theme Toggle -->
-        <button (click)="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white" [title]="'Cambia tema (Attuale: ' + currentTheme + ')'">
-          <svg *ngIf="currentTheme === 'dark'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 019.002-5.998z" />
-          </svg>
-          <svg *ngIf="currentTheme === 'light'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 21v-2.25m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591M12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z" />
-          </svg>
-          <svg *ngIf="currentTheme === 'system'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
-          </svg>
-        </button>
-        
-        <!-- Customizer Toggle -->
-        <button (click)="toggleCustomizer()" class="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white" title="Personalizza colori">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
-          </svg>
-        </button>
-      </div>
-
-      <a (click)="scrollToSection('contact')" class="px-6 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-all hover:scale-105 active:scale-95 backdrop-blur-md cursor-pointer">
-        Contattami
-      </a>
+<nav class="fixed top-0 left-0 w-full z-[100] transition-all duration-500 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 py-4">
+  <div class="container mx-auto px-6 flex justify-between items-center">
+    
+    <!-- Logo -->
+    <div (click)="scrollToSection('top')" class="text-2xl font-black italic tracking-tighter cursor-pointer group flex items-center gap-2">
+      <span class="text-blue-500 group-hover:scale-110 transition-transform">EU</span>
+      <span class="text-white group-hover:text-blue-400 transition-colors">LAB</span>
     </div>
 
-    <!-- Mobile Menu Button -->
-    <button (click)="toggleMenu()" class="md:hidden text-white relative z-50">
-      <svg *ngIf="!isMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-      </svg>
-      <svg *ngIf="isMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex items-center gap-10">
+      <button (click)="scrollToSection('about')" class="nav-link cursor-pointer">Chi Siamo</button>
+      <button (click)="scrollToSection('services')" class="nav-link cursor-pointer">Servizi</button>
+      <button (click)="scrollToSection('skills')" class="nav-link cursor-pointer">Tech & Partner</button>
+      <button (click)="scrollToSection('projects')" class="nav-link cursor-pointer">Progetti</button>
+      
+      <button (click)="scrollToSection('contact')" 
+         class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-900/20 cursor-pointer">
+        Contattami
+      </button>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button (click)="toggleMenu()" class="md:hidden relative z-[110] p-2 text-white">
+      <div class="w-6 h-5 flex flex-col justify-between overflow-hidden">
+        <span [class]="'w-full h-0.5 bg-white transition-all duration-300 ' + (isMenuOpen() ? 'rotate-45 translate-y-2' : '')"></span>
+        <span [class]="'w-full h-0.5 bg-white transition-all duration-300 ' + (isMenuOpen() ? 'opacity-0 translate-x-10' : '')"></span>
+        <span [class]="'w-full h-0.5 bg-white transition-all duration-300 ' + (isMenuOpen() ? '-rotate-45 -translate-y-2' : '')"></span>
+      </div>
     </button>
   </div>
 
-  <!-- Mobile Menu Overlay -->
-  <div *ngIf="isMenuOpen" 
-       class="fixed inset-0 w-full h-[100dvh] bg-slate-950/95 backdrop-blur-[20px] z-40 md:hidden flex flex-col items-center justify-center gap-10 text-3xl font-bold transition-all duration-300">
-    <div class="flex flex-col items-center justify-center gap-8 w-full text-center">
-      <a (click)="scrollToSection('about')" class="text-white hover:text-blue-400 transition-colors tracking-tight mobile-menu-link cursor-pointer">About</a>
-      <a (click)="scrollToSection('services')" class="text-white hover:text-cyan-400 transition-colors tracking-tight mobile-menu-link cursor-pointer">Servizi</a>
-      <a (click)="scrollToSection('skills')" class="text-white hover:text-purple-400 transition-colors tracking-tight mobile-menu-link cursor-pointer">Tech</a>
-      <a (click)="scrollToSection('projects')" class="text-white hover:text-pink-400 transition-colors tracking-tight mobile-menu-link cursor-pointer">Projects</a>
-      <a (click)="scrollToSection('contact')" class="mt-4 px-10 py-4 rounded-full bg-blue-600 text-white text-xl shadow-2xl shadow-blue-500/20 active:scale-95 transition-all mobile-menu-link cursor-pointer">
-        Contattami
-      </a>
-      
-      <!-- Mobile Theme Selector -->
-      <div class="flex gap-4 mt-6">
-        <button (click)="setTheme('dark')" [class.text-blue-400]="currentTheme === 'dark'" class="p-4 rounded-2xl bg-white/5 border border-white/10">Dark</button>
-        <button (click)="setTheme('light')" [class.text-blue-400]="currentTheme === 'light'" class="p-4 rounded-2xl bg-white/5 border border-white/10">Light</button>
-        <button (click)="setTheme('system')" [class.text-blue-400]="currentTheme === 'system'" class="p-4 rounded-2xl bg-white/5 border border-white/10">System</button>
+  <!-- Mobile Overlay -->
+  @if (isMenuOpen()) {
+    <div class="fixed inset-0 z-[100] bg-slate-950/40 backdrop-blur-[80px] md:hidden animate-fadeIn">
+      <div class="flex flex-col items-center justify-center h-full gap-8">
+        <button (click)="scrollToSection('about')" class="mobile-menu-link text-3xl font-bold text-white hover:text-blue-500 transition-colors italic">Chi Siamo</button>
+        <button (click)="scrollToSection('services')" class="mobile-menu-link text-3xl font-bold text-white hover:text-blue-500 transition-colors italic">Servizi</button>
+        <button (click)="scrollToSection('skills')" class="mobile-menu-link text-3xl font-bold text-white hover:text-blue-500 transition-colors italic">Tech & Partner</button>
+        <button (click)="scrollToSection('projects')" class="mobile-menu-link text-3xl font-bold text-white hover:text-blue-500 transition-colors italic">Progetti</button>
+        <button (click)="scrollToSection('blog')" class="mobile-menu-link text-3xl font-bold text-white hover:text-blue-500 transition-colors italic">Blog</button>
+        <button (click)="scrollToSection('contact')" 
+           class="mobile-menu-link mt-8 px-12 py-5 rounded-2xl bg-blue-600 text-white font-bold uppercase tracking-widest text-sm shadow-2xl">
+          Contattami
+        </button>
       </div>
     </div>
-  </div>
+  }
 </nav>

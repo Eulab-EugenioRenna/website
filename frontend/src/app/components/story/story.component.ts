@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,7 +13,8 @@ gsap.registerPlugin(ScrollTrigger);
   styleUrls: ['./story.component.css']
 })
 export class StoryComponent implements AfterViewInit, OnDestroy {
-  storyMilestones = [
+  // Managed as signals for uniformity
+  milestones = signal([
     {
       year: 2020,
       title: 'Nascita di EULAB 🚀',
@@ -44,10 +45,11 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
       description: 'Consolidamento della leadership tecnica con focus su scalabilità, performance e innovazione continua.',
       icon: '🏆'
     }
-  ];
+  ]);
 
-  isLineVisible = false;
+  isLineVisible = signal(false);
   @ViewChild('timelineContainer') timelineContainer!: ElementRef;
+  @ViewChild('yearDisplay') yearDisplay!: ElementRef;
   private scrollTriggers: ScrollTrigger[] = [];
 
   ngAfterViewInit() {
@@ -56,7 +58,7 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
 
   setupGSAPTimeline() {
     const container = this.timelineContainer?.nativeElement;
-    const currentYearDisplay = document.getElementById('currentStoryYearDisplay');
+    const currentYearDisplay = this.yearDisplay?.nativeElement;
     
     if (!container) return;
 
@@ -66,7 +68,7 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
       const lineST = ScrollTrigger.create({
         trigger: container,
         start: 'top 80%',
-        onEnter: () => this.isLineVisible = true
+        onEnter: () => this.isLineVisible.set(true)
       });
       this.scrollTriggers.push(lineST);
     }
@@ -85,7 +87,6 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
       });
       this.scrollTriggers.push(yearST);
 
-      // Animate the year marker
       const marker = group.querySelector('.timeline-year-marker');
       if (marker) {
         gsap.from(marker, {
@@ -97,7 +98,8 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
           scale: 0.5,
           opacity: 0,
           duration: 0.6,
-          ease: 'back.out(1.7)'
+          ease: 'back.out(1.7)',
+          clearProps: 'all'
         });
       }
     });
@@ -119,7 +121,8 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
           x: isLeft ? -50 : 50,
           opacity: 0,
           duration: 0.6,
-          ease: 'power3.out'
+          ease: 'power3.out',
+          clearProps: 'all'
         });
 
         gsap.from(dot, {
@@ -130,7 +133,8 @@ export class StoryComponent implements AfterViewInit, OnDestroy {
           },
           scale: 0,
           duration: 0.4,
-          ease: 'back.out(2)'
+          ease: 'back.out(2)',
+          clearProps: 'all'
         });
       }
     });

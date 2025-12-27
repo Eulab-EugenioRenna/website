@@ -3,46 +3,45 @@
   <div class="glow-safe glow-cyan w-[500px] h-[500px] top-1/2 -right-32 opacity-40"></div>
 
   <div class="container mx-auto px-6 relative z-10">
-    <h2 class="text-4xl font-bold mb-4 text-center text-white">Servizi & Soluzioni 💼</h2>
-    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
-      Soluzioni complete per trasformare la tua visione in realtà digitale
+    <h2 class="text-4xl font-bold mb-4 text-center text-white italic">Servizi & Soluzioni 💼</h2>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">
+      Soluzioni complete per trasformare la tua visione in realtà digitale con le migliori tecnologie attuali.
     </p>
 
-    <!-- Services Grid -->
-    @if (!loading) {
+    @if (!loading()) {
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-500">
-        @for (service of (showAllServices ? services : services.slice(0, 3)); track service.id) {
-          <div class="glass-panel rounded-2xl p-8 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/10 flex flex-col h-full animate-fadeIn">
+        @for (service of (showAllServices() ? services() : services().slice(0, 3)); track service.id) {
+          <div class="glass-panel rounded-3xl p-8 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group hover:shadow-2xl hover:shadow-blue-500/10 flex flex-col h-full animate-fadeIn bg-slate-900/40">
             
             <!-- Icon & Title -->
-            <div class="flex items-start gap-4 mb-6">
-              <div class="text-5xl group-hover:scale-110 transition-transform duration-300">
+            <div class="flex items-start gap-6 mb-8">
+              <div class="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out bg-white/5 p-4 rounded-2xl">
                 {{service.icon}}
               </div>
               <div class="flex-1">
-                <h3 class="text-2xl font-bold text-white mb-2">{{service.name}}</h3>
+                <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{{service.name}}</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">{{service.description}}</p>
               </div>
             </div>
 
             <!-- Features Teaser -->
-            <div class="mb-6 flex-grow">
-              <h4 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">Punti di Forza</h4>
-              <ul class="space-y-2">
+            <div class="mb-8 flex-grow">
+              <h4 class="text-[10px] font-bold text-blue-400 mb-4 uppercase tracking-widest border-l-2 border-blue-500 pl-3">Punti di Forza</h4>
+              <ul class="space-y-3">
                 @for (feature of (service.features || []).slice(0, 3); track feature) {
-                  <li class="flex items-start gap-2 text-sm text-gray-300">
-                    <span class="text-blue-400 mt-0.5">→</span>
-                    <span>{{feature}}</span>
+                  <li class="flex items-start gap-3 text-sm text-gray-300">
+                    <span class="text-blue-400 font-bold">✓</span>
+                    <span class="opacity-80 group-hover:opacity-100 transition-opacity">{{feature}}</span>
                   </li>
                 }
               </ul>
             </div>
 
-            <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+            <div class="mt-auto pt-6 border-t border-white/5">
                 <button (click)="openPricingModal(service)" 
-                        class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center gap-2 transition-colors">
-                    Vedi Piani & Prezzi
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        class="w-full py-3 rounded-2xl bg-white/5 hover:bg-blue-600 border border-white/10 hover:border-blue-500 text-gray-300 hover:text-white text-sm font-bold flex items-center justify-center gap-2 transition-all group/btn">
+                    Piani & Prezzi
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                 </button>
@@ -52,91 +51,173 @@
       </div>
 
       <!-- Toggle Button -->
-      <div class="flex justify-center mt-12" *ngIf="services.length > 3">
-        <button (click)="toggleServices()" 
-                class="group flex items-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium transition-all hover:scale-105">
-           <span>{{ showAllServices ? 'Mostra meno' : 'Scopri tutti i servizi' }}</span>
-           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
-                class="w-5 h-5 transition-transform duration-300"
-                [class.rotate-180]="showAllServices">
-             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-           </svg>
-        </button>
-      </div>
+      @if (services().length > 3) {
+        <div class="flex justify-center mt-16">
+          <button (click)="toggleServices()" 
+                  class="group flex items-center gap-3 px-10 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95">
+             <span>{{ showAllServices() ? 'Mostra meno' : 'Tutti i servizi' }}</span>
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                  class="w-4 h-4 transition-transform duration-300"
+                  [class.rotate-180]="showAllServices()">
+               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+             </svg>
+          </button>
+        </div>
+      }
     }
   </div>
 
   <!-- Pricing Modal Overlay -->
-  <div *ngIf="isModalOpen" 
-       class="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 animate-fadeInOut">
-    
-    <!-- Backdrop -->
-    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md" (click)="closePricingModal()"></div>
-
-    <!-- Modal Content -->
-    <div class="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-3xl border border-white/10 relative z-10 flex flex-col md:flex-row animate-scaleUp">
+  @if (isModalOpen()) {
+    <div class="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-10">
       
-      <!-- Left side: Info & Tier Selector -->
-      <div class="w-full md:w-2/5 p-8 border-r border-white/5 bg-slate-900/40">
-        <button (click)="closePricingModal()" class="md:hidden absolute top-4 right-4 text-gray-400 hover:text-white">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-xl animate-fadeIn" (click)="closePricingModal()"></div>
 
-        <div class="text-5xl mb-6">{{selectedService?.icon}}</div>
-        <h3 class="text-3xl font-bold text-white mb-2">{{selectedService?.name}}</h3>
-        <p class="text-gray-400 text-sm mb-8 leading-relaxed">{{selectedService?.description}}</p>
-
-        <div class="space-y-3">
-          <h4 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Scegli il tuo piano</h4>
-          
-          <button *ngFor="let tier of tiers" 
-                  (click)="selectTier(tier)"
-                  [class.active-tier]="selectedTier === tier"
-                  class="w-full p-4 rounded-xl border border-white/5 text-left transition-all duration-300 hover:bg-white/5 group flex items-center justify-between">
-            <div>
-              <span class="block text-sm font-bold" [class.text-blue-400]="selectedTier === tier">{{getTierLabel(tier)}}</span>
-              <span class="text-xs text-gray-500">{{selectedService?.pricing_tiers?.[tier]?.price || 'Custom'}}</span>
-            </div>
-            <div class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center" [class.border-blue-500]="selectedTier === tier">
-              <div class="w-2.5 h-2.5 rounded-full bg-blue-500 scale-0 transition-transform duration-300" [class.scale-100]="selectedTier === tier"></div>
-            </div>
+      <!-- Modal Content -->
+      <div class="glass-panel w-full max-w-5xl max-h-[90vh] overflow-hidden rounded-[2.5rem] border border-white/10 relative z-10 flex flex-col md:flex-row animate-scaleUp shadow-2xl bg-slate-900/80">
+        
+        <!-- Left side: Info & Tier Selector -->
+        <div class="w-full md:w-2/5 p-10 md:p-12 border-r border-white/5 bg-slate-900/40 overflow-y-auto">
+          <button (click)="closePricingModal()" class="md:hidden absolute top-6 right-6 text-gray-500 hover:text-white transition-colors">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
+
+          <div class="text-6xl mb-8 bg-white/5 w-24 h-24 flex items-center justify-center rounded-3xl">{{selectedService()?.icon}}</div>
+          <h3 class="text-3xl font-bold text-white mb-3">{{selectedService()?.name}}</h3>
+          <p class="text-gray-400 text-sm mb-10 leading-relaxed">{{selectedService()?.description}}</p>
+
+          <div class="space-y-4">
+            <h4 class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-6">Piani Disponibili</h4>
+            
+            @for (tier of tiers; track tier) {
+              <div [class.active-tier]="selectedTier() === tier"
+                   (click)="isPricingUnlocked() ? selectTier(tier) : null"
+                   [class.cursor-pointer]="isPricingUnlocked()"
+                   [class.opacity-50]="!isPricingUnlocked()"
+                   class="w-full p-5 rounded-2xl border border-white/5 text-left transition-all duration-300 hover:bg-white/5 group flex items-center justify-between">
+                <div>
+                  <span class="block text-sm font-bold uppercase tracking-wider" [class.text-blue-400]="selectedTier() === tier">{{getTierLabel(tier)}}</span>
+                  <span class="text-[10px] text-gray-500 font-medium">
+                    @if (isPricingUnlocked()) {
+                      {{ selectedService()?.pricing_tiers?.[tier]?.price || 'Contattaci' }}
+                    } @else {
+                      <span class="blur-[4px] select-none">€ 0.000</span>
+                    }
+                  </span>
+                </div>
+                @if (isPricingUnlocked()) {
+                  <div class="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center transition-colors" [class.border-blue-500]="selectedTier() === tier">
+                    <div class="w-3 h-3 rounded-full bg-blue-500 scale-0 transition-transform duration-300" [class.scale-100]="selectedTier() === tier"></div>
+                  </div>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                  </svg>
+                }
+              </div>
+            }
+          </div>
         </div>
-      </div>
 
-      <!-- Right side: Features & CTA -->
-      <div class="w-full md:w-3/5 p-8 overflow-y-auto bg-slate-900/20">
-        <button (click)="closePricingModal()" class="hidden md:block absolute top-6 right-6 text-gray-400 hover:text-white transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+        <!-- Right side: Content (Unlocked Prices OR Lead Form) -->
+        <div class="w-full md:w-3/5 p-10 md:p-12 overflow-y-auto bg-slate-900/20 flex flex-col relative">
+          <button (click)="closePricingModal()" class="hidden md:block absolute top-8 right-8 text-gray-500 hover:text-white transition-colors">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
 
-        <div class="mb-8">
-            <div class="flex items-baseline gap-2 mb-4">
-                <span class="text-4xl font-bold text-white">{{selectedService?.pricing_tiers?.[selectedTier]?.price}}</span>
-                <span class="text-gray-500 text-sm" *ngIf="selectedTier !== 'enterprise'">/ a progetto</span>
+          @if (isPricingUnlocked()) {
+            <!-- Unlocked View -->
+            <div class="animate-fadeIn">
+              <div class="mb-12">
+                  <div class="flex items-baseline gap-3 mb-4">
+                      <span class="text-5xl font-bold text-white tracking-tight">
+                        {{ selectedService()?.pricing_tiers?.[selectedTier()]?.price || 'Sempre Custom' }}
+                      </span>
+                      @if (selectedTier() !== 'enterprise') {
+                        <span class="text-gray-500 text-sm font-medium">/ punto di partenza</span>
+                      }
+                  </div>
+                  <p class="text-blue-400 text-xs font-bold uppercase tracking-widest opacity-80">
+                    {{ selectedTier() === 'basic' ? 'Ideale per MVP & Landing' : selectedTier() === 'professional' ? 'Per business in crescita' : 'Soluzioni su misura a 360°' }}
+                  </p>
+              </div>
+
+              <div class="space-y-6 flex-grow mb-12">
+                <h4 class="text-[10px] font-bold text-white uppercase tracking-[0.2em] mb-4">Caratteristiche Incluse:</h4>
+                <div class="grid gap-4">
+                  @for (feat of (selectedService()?.pricing_tiers?.[selectedTier()]?.features || selectedService()?.features); track feat) {
+                    <div class="flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                      <span class="text-blue-400 text-xl font-bold">✓</span>
+                      <span class="text-sm text-gray-300 leading-relaxed">{{feat}}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-5 mt-auto">
+                  <button (click)="scrollToContact()"
+                          class="w-full py-5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-center transition-all shadow-2xl shadow-blue-900/40 hover:scale-[1.02] active:scale-[0.98]">
+                     Inizia il tuo Progetto
+                  </button>
+                  <p class="text-[9px] text-gray-500 text-center uppercase tracking-[0.2em] font-bold">Supporto Prioritario • Risposta rapida • No Impegni</p>
+              </div>
             </div>
-            <p class="text-gray-300 text-sm italic">Ideale per: {{selectedTier === 'basic' ? 'Starting small' : selectedTier === 'professional' ? 'Scaling fast' : 'Large businesses'}}</p>
-        </div>
+          } @else {
+            <!-- Locked View (Lead Form) -->
+            <div class="flex flex-col h-full animate-fadeIn">
+              <div class="mb-10">
+                <h4 class="text-2xl font-bold text-white mb-4 italic">Sblocca il Listino Prezzi 🔓</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                  Lasciaci i tuoi contatti per visualizzare i dettagli dei costi e ricevere una consulenza gratuita senza impegno.
+                </p>
+              </div>
 
-        <div class="space-y-4 mb-8">
-          <h4 class="text-xs font-bold text-white uppercase tracking-widest px-1">Cosa avrai:</h4>
-          <ul class="grid gap-3">
-            <li *ngFor="let feat of (selectedService?.pricing_tiers?.[selectedTier]?.features || selectedService?.features)" 
-                class="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
-              <span class="text-blue-400 text-lg">✓</span>
-              <span class="text-sm text-gray-300">{{feat}}</span>
-            </li>
-          </ul>
-        </div>
+              <form (submit)="submitLead($event)" class="space-y-6 flex-grow">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Nome Completo</label>
+                  <input type="text" 
+                         [(ngModel)]="leadForm.name" 
+                         name="name"
+                         required
+                         placeholder="Inserisci il tuo nome..."
+                         class="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all">
+                </div>
+                
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Email Aziendale</label>
+                  <input type="email" 
+                         [(ngModel)]="leadForm.email" 
+                         name="email"
+                         required
+                         placeholder="mario@azienda.it"
+                         class="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all">
+                </div>
 
-        <div class="flex flex-col gap-4">
-            <a (click)="scrollToContact()"
-               class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-center transition-all shadow-lg shadow-blue-900/20 cursor-pointer">
-               Inizia Ora - Richiedi Info
-            </a>
-            <p class="text-[10px] text-gray-500 text-center uppercase tracking-tighter">Nessun impegno richiesto. Risposta entro 24 ore.</p>
+                <div class="pt-6">
+                  <button type="submit"
+                          [disabled]="isSubmitting() || !leadForm.name || !leadForm.email"
+                          class="w-full py-5 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-center transition-all shadow-2xl shadow-blue-900/40 flex items-center justify-center gap-3">
+                    @if (isSubmitting()) {
+                      <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Caricamento...</span>
+                    } @else {
+                      <span>Sblocca Prezzi & Servizi</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                      </svg>
+                    }
+                  </button>
+                </div>
+              </form>
+
+              <p class="mt-8 text-[9px] text-gray-600 text-center leading-relaxed italic">
+                Rispettiamo la tua privacy. I tuoi dati verranno utilizzati esclusivamente per scopi commerciali legati a questa richiesta.
+              </p>
+            </div>
+          }
         </div>
       </div>
     </div>
-  </div>
+  }
 </section>

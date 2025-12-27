@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 
@@ -10,14 +10,14 @@ import { gsap } from 'gsap';
   styleUrls: ['./trust.component.css']
 })
 export class TrustComponent implements OnInit, AfterViewInit {
-  stats = [
+  stats = signal([
     { value: 50, suffix: '+', label: 'Progetti Completati', icon: '🚀' },
     { value: 100, suffix: '%', label: 'Soddisfazione Clienti', icon: '⭐' },
     { value: 24, suffix: 'h', label: 'Tempo di Risposta', icon: '⚡' },
     { value: 10, suffix: '+', label: 'Anni di Esperienza', icon: '🎯' }
-  ];
+  ]);
 
-  displayValues: number[] = [0, 0, 0, 0];
+  displayValues = signal<number[]>([0, 0, 0, 0]);
 
   constructor(private el: ElementRef) {}
 
@@ -32,7 +32,6 @@ export class TrustComponent implements OnInit, AfterViewInit {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Use a dummy object for GSAP animation
           const dummy = { value: 0 };
           
           gsap.to(dummy, {
@@ -40,9 +39,9 @@ export class TrustComponent implements OnInit, AfterViewInit {
             duration: 2,
             ease: 'power2.out',
             onUpdate: () => {
-              this.stats.forEach((stat, index) => {
-                this.displayValues[index] = Math.floor(stat.value * dummy.value);
-              });
+              const currentStats = this.stats();
+              const newValues = currentStats.map(stat => Math.floor(stat.value * dummy.value));
+              this.displayValues.set(newValues);
             }
           });
           
@@ -58,22 +57,19 @@ export class TrustComponent implements OnInit, AfterViewInit {
   }
 
   setupMobileObserver(): void {
-    // Only run on mobile
     if (window.innerWidth >= 768) return;
 
     const cards = this.el.nativeElement.querySelectorAll('.mobile-trust-card');
     const options = {
       root: this.el.nativeElement.querySelector('.trust-container'),
-      threshold: 0.7, // Trigger when 70% visible
-      rootMargin: '0px -20% 0px -20%' // Narrower detection area for center focus
+      threshold: 0.7,
+      rootMargin: '0px -20% 0px -20%'
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Remove active from all siblings
           cards.forEach((c: any) => c.classList.remove('active'));
-          // Add active to current
           entry.target.classList.add('active');
         }
       });

@@ -2,6 +2,11 @@
   will-change: transform;
 }
 
+.process-progress {
+  will-change: height;
+  /* GSAP handles the height, removing transition-all to prevent lag/stutter */
+}
+
 .step-number {
   will-change: transform, opacity;
 }
@@ -12,6 +17,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 @media (max-width: 768px) {

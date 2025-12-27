@@ -3,107 +3,101 @@
   <div class="glow-safe glow-blue w-[500px] h-[500px] top-1/4 left-1/4 opacity-30"></div>
 
   <div class="container mx-auto px-6 relative z-10">
-    <h2 class="text-4xl font-bold mb-4 text-center text-white">Domande Frequenti ❓</h2>
-    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-12">
-      Trova risposte alle domande più comuni sui nostri servizi
+    <h2 class="text-4xl font-bold mb-4 text-center text-white italic">Domande Frequenti ❓</h2>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-16">
+      Trova risposte trasparenti alle domande più comuni sui nostri servizi e metodologie di lavoro.
     </p>
 
     <!-- Search Bar -->
-    <div class="max-w-2xl mx-auto mb-8">
-      <div class="relative">
+    <div class="max-w-2xl mx-auto mb-12">
+      <div class="relative group">
         <input type="text" 
-               [(ngModel)]="searchQuery"
-               (ngModelChange)="onSearchChange()"
+               [ngModel]="faqForm().search"
+               (ngModelChange)="updateSearch($event)"
                placeholder="Cerca nelle FAQ..."
-               class="w-full px-6 py-4 pl-12 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+               class="w-full px-8 py-5 pl-14 rounded-3xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all backdrop-blur-md group-hover:bg-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-400 transition-colors">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
       </div>
     </div>
 
     <!-- Category Filter -->
-    <div class="flex flex-wrap justify-center gap-3 mb-12">
+    <div class="flex flex-wrap justify-center gap-3 mb-16">
       @for (cat of categories; track cat.value) {
         <button type="button"
-                (click)="selectCategory(cat.value)"
-                [ngClass]="{
-                  'bg-blue-600': selectedCategory === cat.value,
-                  'text-white': selectedCategory === cat.value,
-                  'bg-white/5': selectedCategory !== cat.value,
-                  'text-gray-400': selectedCategory !== cat.value
-                }"
-                class="px-5 py-2 rounded-full font-medium text-sm transition-all hover:scale-105 border border-white/10">
+                (click)="updateCategory(cat.value)"
+                [class.tag-active]="faqForm().category === cat.value"
+                class="px-6 py-2.5 rounded-full font-bold text-[10px] uppercase tracking-widest transition-all hover:scale-105 border border-white/10 bg-white/5 text-gray-400">
           {{cat.label}}
         </button>
       }
     </div>
 
     <!-- FAQ Accordion -->
-    @if (!loading) {
-      <div class="max-w-3xl mx-auto space-y-4">
-        @for (faq of filteredFaqs; track faq.id; let i = $index) {
-          <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
+    @if (!loading()) {
+      <div class="max-w-3xl mx-auto space-y-6">
+        @for (faq of filteredFaqs(); track faq.id; let i = $index) {
+          <div class="glass-panel rounded-3xl border border-white/5 overflow-hidden transition-all duration-500 hover:border-blue-500/30 bg-slate-900/40"
+               [class.shadow-2xl]="expandedIndex() === i"
+               [ngClass]="{'shadow-blue-900/10': expandedIndex() === i}">
             
             <!-- Question (Clickable) -->
             <button type="button"
                     (click)="toggleFaq(i)" 
-                    class="w-full px-6 py-5 flex items-center justify-between text-left group">
-              <span class="text-lg font-semibold text-white pr-4 group-hover:text-blue-400 transition-colors">
+                    class="w-full px-8 py-6 flex items-center justify-between text-left group">
+              <span class="text-lg font-bold text-white pr-6 group-hover:text-blue-400 transition-colors leading-tight">
                 {{faq.question}}
               </span>
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   fill="none" 
-                   viewBox="0 0 24 24" 
-                   stroke-width="2" 
-                   stroke="currentColor" 
-                   [class.rotate-180]="expandedIndex === i"
-                   class="w-6 h-6 text-blue-400 flex-shrink-0 transition-transform duration-300">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
+              <div class="p-2 rounded-xl bg-white/5 group-hover:bg-blue-600/20 transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                       fill="none" 
+                       viewBox="0 0 24 24" 
+                       stroke-width="2.5" 
+                       stroke="currentColor" 
+                       [class.rotate-180]="expandedIndex() === i"
+                       class="w-5 h-5 text-blue-400 flex-shrink-0 transition-transform duration-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+              </div>
             </button>
 
             <!-- Answer (Expandable) -->
-            <div [class.max-h-0]="expandedIndex !== i"
-                 [class.max-h-96]="expandedIndex === i"
-                 class="overflow-hidden transition-all duration-300">
-              <div class="px-6 pb-5 pt-0">
-                <div class="text-gray-300 leading-relaxed border-t border-white/5 pt-4">
+            <div [class.max-h-0]="expandedIndex() !== i"
+                 [class.max-h-[500px]]="expandedIndex() === i"
+                 class="overflow-hidden transition-all duration-500 ease-in-out">
+              <div class="px-8 pb-8 pt-0">
+                <div class="text-gray-400 leading-relaxed border-t border-white/5 pt-6 text-sm">
                   {{faq.answer}}
                 </div>
               </div>
             </div>
           </div>
-        }
-
-        <!-- No Results -->
-        @if (filteredFaqs.length === 0) {
-          <div class="text-center py-12">
-            <div class="text-6xl mb-4">🔍</div>
-            <p class="text-gray-400">Nessuna FAQ trovata. Prova con un'altra ricerca.</p>
+        } @empty {
+          <div class="text-center py-20 bg-white/5 rounded-3xl border border-white/5">
+            <div class="text-6xl mb-6 opacity-20">🔍</div>
+            <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Nessuna FAQ trovata con questi criteri.</p>
+            <button (click)="resetFilters()" class="mt-6 text-blue-400 hover:text-blue-300 font-bold text-xs uppercase tracking-widest">Resetta Ricerca</button>
           </div>
         }
       </div>
-    }
-
-    <!-- Loading State -->
-    @if (loading) {
-      <div class="text-center py-12">
-        <div class="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-gray-400 mt-4">Caricamento FAQ...</p>
-      </div>
+    } @else {
+        <div class="flex flex-col items-center justify-center py-24">
+            <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+            <p class="text-gray-500 uppercase tracking-widest text-xs font-bold">Caricamento FAQ...</p>
+        </div>
     }
 
     <!-- CTA -->
-    <div class="text-center mt-16">
-      <p class="text-gray-400 mb-6">Non hai trovato la risposta che cercavi?</p>
-      <a (click)="scrollToContact()" 
-         class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all hover:scale-105 shadow-lg shadow-blue-500/30 cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+    <div class="text-center mt-20">
+      <p class="text-gray-500 mb-8 font-medium">Non hai trovato quello che cercavi?</p>
+      <button (click)="scrollToContact()" 
+         class="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold uppercase tracking-[0.15em] text-xs transition-all hover:scale-105 shadow-2xl shadow-blue-900/30 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
         </svg>
         Contattaci Direttamente
-      </a>
+      </button>
     </div>
   </div>
 </section>

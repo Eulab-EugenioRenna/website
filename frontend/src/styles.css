@@ -1,15 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-glass: rgba(255, 255, 255, 0.1);
   --color-glass-border: rgba(255, 255, 255, 0.2);
   --font-family-sans: 'Inter', sans-serif;
   --font-family-display: 'Space Grotesk', sans-serif;
   --font-family-heading: 'Outfit', sans-serif;
-}
-
-:root {
   /* Core Colors */
   --bg-color: #0b0f19;
   --text-color: #f8fafc;

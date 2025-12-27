@@ -1,113 +1,127 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { PocketbaseService, BlogPost } from '../../services/pocketbase.service';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.css']
 })
 export class BlogComponent implements OnInit {
-  posts: BlogPost[] = [];
-  loading = true;
-  selectedTag: string | null = null;
-  allTags: string[] = [];
+  // State using Signals
+  posts = signal<BlogPost[]>([]);
+  loading = signal(true);
+  loadingMore = signal(false);
+  
+  currentPage = signal(1);
+  perPage = 6;
+  totalItems = signal(0);
+  totalPages = signal(0);
 
-  // Fallback blog posts
-  fallbackPosts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'Come l\'AI sta trasformando il business moderno',
-      slug: 'ai-trasformazione-business',
-      content: 'Contenuto completo dell\'articolo...',
-      excerpt: 'Scopri come l\'intelligenza artificiale può automatizzare processi e migliorare l\'efficienza aziendale.',
-      published_date: '2024-01-15',
-      tags: ['AI', 'Business', 'Automazione'],
-      status: 'published',
-      author: 'EULAB Team',
-      created: '',
-      updated: ''
-    },
-    {
-      id: '2',
-      title: 'Guida completa a Docker per sviluppatori',
-      slug: 'guida-docker-sviluppatori',
-      content: 'Contenuto completo dell\'articolo...',
-      excerpt: 'Impara a containerizzare le tue applicazioni e migliorare il deployment con Docker.',
-      published_date: '2024-01-10',
-      tags: ['Docker', 'DevOps', 'Tutorial'],
-      status: 'published',
-      author: 'EULAB Team',
-      created: '',
-      updated: ''
-    },
-    {
-      id: '3',
-      title: 'Cloud vs On-Premise: quale scegliere?',
-      slug: 'cloud-vs-on-premise',
-      content: 'Contenuto completo dell\'articolo...',
-      excerpt: 'Analisi comparativa tra soluzioni cloud e infrastrutture on-premise per la tua azienda.',
-      published_date: '2024-01-05',
-      tags: ['Cloud', 'Infrastruttura', 'Business'],
-      status: 'published',
-      author: 'EULAB Team',
-      created: '',
-      updated: ''
-    }
-  ];
+  // For tag cloud
+  allTags = signal<string[]>([]);
 
-  constructor(private pb: PocketbaseService) {}
+  constructor(public pb: PocketbaseService) {
+    // React to tag filter OR search changes
+    effect(() => {
+      this.pb.blogTagFilter();
+      this.pb.blogSearch();
+      
+      this.currentPage.set(1);
+      this.loadPosts(true);
+    }, { allowSignalWrites: true });
+  }
 
   async ngOnInit() {
-    await this.loadPosts();
+    this.loadAllAvailableTags();
   }
 
-  async loadPosts() {
+  async loadAllAvailableTags() {
     try {
-      const data = await this.pb.getBlogPosts(6) as unknown as BlogPost[];
-      this.posts = data.length > 0 ? data : this.fallbackPosts;
-      this.extractTags();
+      const result = await this.pb.client.collection('blog_posts').getFullList({
+        filter: 'status = "published"',
+        fields: 'tags'
+      });
+      const tagSet = new Set<string>();
+      result.forEach(p => {
+         const tags = p['tags'];
+         if (Array.isArray(tags)) {
+             tags.forEach((t: string) => tagSet.add(t));
+         } else if (typeof tags === 'string') {
+             // Handle case where it might be a comma separated string if saved differently
+             tags.split(',').forEach(t => tagSet.add(t.trim()));
+         }
+      });
+      this.allTags.set(Array.from(tagSet).filter(t => !!t).sort());
     } catch (error) {
-      console.error('Error loading blog posts:', error);
-      this.posts = this.fallbackPosts;
-      this.extractTags();
-    } finally {
-      this.loading = false;
+      console.error('Error loading tags:', error);
     }
   }
 
-  extractTags() {
-    const tagSet = new Set<string>();
-    this.posts.forEach(post => {
-      if (post.tags) {
-        post.tags.forEach(tag => tagSet.add(tag));
+  async loadPosts(reset = false) {
+    if (reset) {
+      this.loading.set(true);
+    } else {
+      this.loadingMore.set(true);
+    }
+
+    try {
+      const result = await this.pb.getBlogPosts(this.currentPage(), this.perPage);
+      
+      const newPosts = result.items as unknown as BlogPost[];
+      if (reset) {
+        this.posts.set(newPosts);
+      } else {
+        this.posts.update(prev => [...prev, ...newPosts]);
       }
-    });
-    this.allTags = Array.from(tagSet).sort();
+
+      this.totalItems.set(result.totalItems);
+      this.totalPages.set(result.totalPages);
+
+      // Trigger ScrollTrigger refresh
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+            (window as any).gsap?.getProperty && (window as any).ScrollTrigger?.refresh();
+        }
+      }, 200);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+    } finally {
+      this.loading.set(false);
+      this.loadingMore.set(false);
+    }
   }
 
-  get filteredPosts(): BlogPost[] {
-    if (!this.selectedTag) return this.posts;
-    return this.posts.filter(post => 
-      post.tags && post.tags.includes(this.selectedTag!)
-    );
+  loadMore() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+      this.loadPosts(false);
+    }
+  }
+
+  onSearchChange(query: string) {
+    this.pb.setBlogSearch(query);
   }
 
   selectTag(tag: string | null) {
-    this.selectedTag = tag;
+    this.pb.setBlogTagFilter(tag);
+  }
+
+  clearAllFilters() {
+    this.pb.setBlogTagFilter(null);
+    this.pb.setBlogSearch('');
   }
 
   getImageUrl(post: BlogPost): string {
-    if (post.cover_image) {
-      return this.pb.getImageUrl(post, post.cover_image);
-    }
-    return '';
+    return this.pb.resolveLogo(post);
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('it-IT', { 
       year: 'numeric', 

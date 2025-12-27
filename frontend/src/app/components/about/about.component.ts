@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,6 +14,13 @@ gsap.registerPlugin(ScrollTrigger);
   styleUrl: './about.component.css'
 })
 export class AboutComponent implements AfterViewInit {
+  // Static content could be managed by signals for future reactivity
+  stats = signal([
+    { label: 'Cloud Migrations', value: '150+' },
+    { label: 'Uptime Guaranteed', value: '99.9%' },
+    { label: 'Security Audits', value: '200+' }
+  ]);
+
   constructor(private scrollService: ScrollService) {}
 
   scrollToContact() {
@@ -21,9 +28,11 @@ export class AboutComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const cards = document.querySelectorAll('.about-card');
+    this.initAnimations();
+  }
 
-    // Animate section title and content
+  private initAnimations() {
+    // Section entrance
     gsap.from('.about-reveal', {
       scrollTrigger: {
         trigger: '.about-reveal',
@@ -33,23 +42,23 @@ export class AboutComponent implements AfterViewInit {
       opacity: 0,
       y: 30,
       duration: 0.8,
-      stagger: 0.15,
+      stagger: 0.1,
       ease: 'power3.out'
     });
 
-    // Individual card reveals for better mobile reliability
-    cards.forEach((card) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 90%',
-          toggleActions: 'play none none reverse'
-        },
-        opacity: 0,
-        y: 30,
-        duration: 0.6,
-        ease: 'power3.out'
-      });
+    // Content cards
+    gsap.from('.about-card', {
+      scrollTrigger: {
+        trigger: '.about-card',
+        start: 'top 90%',
+        toggleActions: 'play none none reverse'
+      },
+      opacity: 0,
+      scale: 0.95,
+      y: 20,
+      duration: 0.6,
+      stagger: 0.15,
+      ease: 'power2.out'
     });
   }
 }

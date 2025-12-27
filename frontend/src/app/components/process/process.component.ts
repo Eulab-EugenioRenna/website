@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -21,11 +21,11 @@ interface ProcessStep {
   styleUrls: ['./process.component.css']
 })
 export class ProcessComponent implements OnInit, AfterViewInit {
-  @ViewChild('processContainer') processContainer!: ElementRef;
   @ViewChild('processWrapper') processWrapper!: ElementRef;
+  @ViewChild('stepsContainer') stepsContainer!: ElementRef;
   @ViewChild('progressBar') progressBar!: ElementRef;
 
-  steps: ProcessStep[] = [
+  steps = signal<ProcessStep[]>([
     {
       number: 1,
       title: 'Consulenza Gratuita',
@@ -61,94 +61,104 @@ export class ProcessComponent implements OnInit, AfterViewInit {
       icon: '🤝',
       duration: 'Sempre'
     }
-  ];
+  ]);
 
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.initAnimations();
+    // Initial setup with a small delay to ensure rendering
+    setTimeout(() => {
+      this.initAnimations();
+    }, 100);
   }
 
   initAnimations(): void {
     const isMobile = window.innerWidth < 768;
     
     if (isMobile) {
-      // Mobile: Simple fade-in for each step
-      this.steps.forEach((_, index) => {
+      // Mobile: engage participants as they scroll
+      this.steps().forEach((_, index) => {
         gsap.from(`.process-step-${index}`, {
           scrollTrigger: {
             trigger: `.process-step-${index}`,
-            start: 'top 90%',
+            start: 'top 85%',
             toggleActions: 'play none none reverse'
           },
           opacity: 0,
-          y: 30,
-          duration: 0.6,
+          y: 40,
+          duration: 0.8,
           ease: 'power2.out'
         });
       });
     } else {
-      // Desktop: Pinned Sequential Timeline with Overlap
+      // Desktop: Stacking Cards Switching Logic
       const wrapper = this.processWrapper.nativeElement;
       const progressBar = this.progressBar.nativeElement;
       const cards = wrapper.querySelectorAll('.process-card');
+      const markers = wrapper.querySelectorAll('.marker-dot');
       const totalSteps = cards.length;
 
-      // 1. PINNING: Create a master timeline that pins the wrapper for enough scroll distance
+      // 0. Kill existing ScrollTriggers
+      ScrollTrigger.getAll().filter(st => st.vars.trigger === wrapper).forEach(st => st.kill());
+
+      // 1. Setup the master timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapper,
-          start: 'center center', // Pin when center of section hits center of viewport
-          end: '+=4000', // Scroll for 4000px
-          scrub: 0.5, // Smooth scrubbing
-          pin: true,  // Pin the section while animating
+          start: 'center center',
+          end: `+=${totalSteps * 1000}`,
+          scrub: 1,
+          pin: true,
           anticipatePin: 1
         }
       });
 
-      // 2. PROGRESS BAR: Fills continuously as we scroll through the pinned area
-      tl.to(progressBar, { height: '100%', duration: 1, ease: 'none' }, 0);
+      // 2. Progress Bar
+      tl.to(progressBar, { height: '100%', duration: totalSteps, ease: 'none' }, 0);
 
-      // 3. CARDS SEQUENCE: Sequential overlap
-      const stepDuration = 1 / totalSteps; 
-      const markers = wrapper.querySelectorAll('.rounded-full.bg-slate-600');
-
+      // 3. Stacking Card Sequence
       cards.forEach((card: any, i: number) => {
-        // Calculate relative start time
-        const startTime = i * stepDuration;
-        const endTime = startTime + stepDuration;
-        
-        // Animate Marker
-        if (markers[i]) {
-            tl.to(markers[i], {
-                backgroundColor: '#3b82f6', // blue-500
-                scale: 1.5,
-                duration: 0.1,
-                ease: 'power1.out'
-            }, startTime);
-        }
-
-        // Entrance: Fade In + Scale Up + Move Up
+        // Entrance
         tl.to(card, {
           opacity: 1,
-          scale: 1,
           y: 0,
-          duration: stepDuration * 0.5, // First half of the slot
+          scale: 1,
+          duration: 0.5,
           ease: 'power2.out'
-        }, startTime);
+        }, i);
 
-        // Exit: Fade Out + Scale Down + Move Up (to clear)
-        if (i < totalSteps) { 
-           tl.to(card, {
+        // Marker activation
+        if (markers[i]) {
+          tl.to(markers[i], {
+            backgroundColor: '#3b82f6',
+            scale: 1.5,
+            duration: 0.2
+          }, i);
+        }
+
+        // Exit (fade out stay/overlap)
+        // We fade out the card before the NEXT one starts, or slightly overlapping
+        if (i < totalSteps - 1) {
+          tl.to(card, {
             opacity: 0,
-            scale: 0.9,
-            y: -30,
-            filter: 'blur(5px)',
-            duration: stepDuration * 0.4,
+            y: -40,
+            scale: 0.95,
+            filter: 'blur(10px)',
+            duration: 0.5,
             ease: 'power2.in'
-          }, endTime - (stepDuration * 0.4)); 
+          }, i + 0.6); // Starts fading out at 60% of the slot duration
+
+          if (markers[i]) {
+            tl.to(markers[i], {
+              backgroundColor: '#1e293b', // Reset to dark
+              scale: 1,
+              duration: 0.2
+            }, i + 0.6);
+          }
         }
       });
     }
+
+    ScrollTrigger.refresh();
   }
 }

@@ -1,12 +1,11 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, signal, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PocketbaseService } from '../../services/pocketbase.service';
-import { environment } from '../../../environments/environment';
+import { PocketbaseService, Client } from '../../services/pocketbase.service';
+import { ScrollService } from '../../services/scroll.service';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-skills',
@@ -16,45 +15,42 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
   styleUrls: ['./skills.component.css']
 })
 export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
-  partners: any[] = [];
-  clients: any[] = [];
+  // State using Signals
+  clients = signal<Client[]>([]);
+  techStack = signal<any[]>([]);
   
-  techStack: any[] = [];
-  
-  @ViewChild('timelineContainer') timelineContainer!: ElementRef;
-
+  private clientsSliderAnim: gsap.core.Timeline | null = null;
   private scrollTriggers: ScrollTrigger[] = [];
 
-  constructor(private pb: PocketbaseService) {}
+  constructor(
+    private pb: PocketbaseService,
+    private scrollService: ScrollService,
+    private el: ElementRef
+  ) {}
 
   async ngOnInit() {
     try {
-      this.partners = await this.pb.getPartners();
-      this.clients = await this.pb.getClients();
-      this.techStack = await this.pb.getTechStack();
+      const [tech, clientData] = await Promise.all([
+        this.pb.getTechStack(),
+        this.pb.getClients()
+      ]);
+      
+      this.techStack.set(tech);
+      // Casting to our Client interface
+      this.clients.set(clientData as unknown as Client[]);
 
-      // For clients, we could possibly duplicate from partners if available
-      if (this.clients.length === 0 && this.partners.length > 0) {
-          this.clients = this.partners;
-      }
-
+      // Initialize animations after data is set and rendered
       setTimeout(() => {
-        this.setupGSAPTimeline();
         this.setupClientsSlider();
-      }, 500);
+        this.setupAnimations();
+      }, 150);
         
     } catch (error) {
       console.log('Backend connection failed', error);
-      setTimeout(() => {
-        this.setupGSAPTimeline();
-        this.setupClientsSlider();
-      }, 500);
     }
   }
 
   ngAfterViewInit() {}
-
-  private clientsSliderAnim: gsap.core.Timeline | null = null;
 
   setupClientsSlider() {
     const track = document.querySelector('.clients-track');
@@ -67,15 +63,16 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     const items = track.querySelectorAll('.client-item');
     if (items.length === 0) return;
 
+    // We only need to duplicate if we have enough items, 
+    // but the template already does it.
     const totalWidth = track.scrollWidth / 2;
     
     this.clientsSliderAnim = gsap.timeline({
       repeat: -1,
       defaults: { 
         ease: 'none', 
-        duration: 35, 
+        duration: 40, 
         force3D: true, 
-        autoRound: false 
       }
     });
 
@@ -87,48 +84,66 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     track.addEventListener('mouseleave', () => this.clientsSliderAnim?.resume());
   }
 
-  setupGSAPTimeline() {
-    // Kill existing triggers to avoid duplicates
-    this.scrollTriggers.forEach(st => st.kill());
-    this.scrollTriggers = [];
+  setupAnimations() {
+    const techItems = this.el.nativeElement.querySelectorAll('.tech-item-wrapper');
+    if (techItems.length > 0) {
+      // Ensure items are initially invisible if GSAP is going to animate them
+      // This helps avoid the "flash" then disappearance if the trigger is late
+      gsap.set(techItems, { opacity: 0, scale: 0.5, y: 30 });
 
-    // Refresh ScrollTrigger to ensure all positions are correct
-    ScrollTrigger.refresh();
+      const st = ScrollTrigger.create({
+        trigger: this.el.nativeElement.querySelector('.tech-wall'),
+        start: 'top 90%',
+        onEnter: () => {
+          gsap.to(techItems, {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: {
+              amount: 0.8,
+              from: 'center'
+            },
+            ease: 'expo.out',
+            clearProps: 'all' // Clear GSAP styles after animation to let CSS take over for hover
+          });
+        },
+        once: true
+      });
+      this.scrollTriggers.push(st);
+    }
   }
 
-  // Helper to get logo from Logo.dev
-  getLogoDevUrl(domain: string): string {
-    const token = (environment as any).logoDevToken;
-    if (!domain) return '';
-    let cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    return `https://img.logo.dev/${cleanDomain}?token=${token}&size=128&format=png`;
-  }
-
-  getPbImageUrl(item: any, fileName: string) {
-    if (!item || !fileName) return '';
-    return this.pb.client.files.getUrl(item, fileName);
-  }
-
-  // Smart image resolver: PB > Logo_url > Logo.dev > Fallback
   getLogo(item: any): string {
-    if (item.logo) {
-      return this.getPbImageUrl(item, item.logo);
-    }
-    if (item.logo_url) {
-      return item.logo_url;
-    }
-    if (item.website) {
-       return this.getLogoDevUrl(item.website);
-    }
-    return ''; 
+    return this.pb.resolveLogo(item);
   }
 
   filterProjectsByClient(clientId: string) {
+    if (!clientId) return;
+    
+    // 1. Set the global filter
     this.pb.setProjectFilter(clientId);
-    const projectsSection = document.getElementById('projects-section');
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    
+    // 2. Clear other project filters to avoid conflicts
+    this.pb.setProjectTagFilter(null);
+    this.pb.setProjectSearch('');
+    
+    // 3. Scroll to projects section
+    this.scrollService.scrollToSection('projects');
+  }
+
+  filterProjectsByTag(tag: string) {
+    if (!tag) return;
+    
+    // 1. Set the global tag filter
+    this.pb.setProjectTagFilter(tag);
+    
+    // 2. Clear client filter to avoid narrow results
+    this.pb.setProjectFilter(null);
+    this.pb.setProjectSearch('');
+    
+    // 3. Scroll to projects section
+    this.scrollService.scrollToSection('projects');
   }
 
   ngOnDestroy() {

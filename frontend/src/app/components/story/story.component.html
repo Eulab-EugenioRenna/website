@@ -1,45 +1,75 @@
-<section class="py-24 relative overflow-hidden bg-slate-900/30 border-y border-white/5" id="story">
+<section class="py-24 relative bg-slate-900 border-t border-white/5 overflow-hidden" id="story">
+    <!-- Floating Year Indicator (Desktop) - Now scoped to section -->
+    <div #yearDisplay id="currentStoryYearDisplay" class="hidden md:block absolute left-12 top-1/2 -translate-y-1/2 text-[15vw] font-black pointer-events-none z-0 opacity-0 transition-opacity duration-300 text-white/5 whitespace-nowrap italic select-none">
+        2020
+    </div>
+
     <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-white mb-4 italic">La Nostra Storia ✨</h2>
-            <p class="text-gray-400 max-w-2xl mx-auto italic">Dal primo codice all'innovazione quotidiana. Un viaggio fatto di sfide, crescita e tecnologia.</p>
+        <div class="text-center mb-24">
+            <h2 class="text-[10px] items-center justify-center gap-2 uppercase tracking-[0.3em] text-blue-500 font-bold mb-6 flex">
+                <span class="w-10 h-[1px] bg-blue-500/50"></span>
+                La Nostra Storia
+                <span class="w-10 h-[1px] bg-blue-500/50"></span>
+            </h2>
+            <h3 class="text-4xl md:text-5xl font-bold text-white leading-tight italic">
+                Evoluzione & <span class="text-blue-500">Innovazione</span> 📜
+            </h3>
         </div>
-        
-        <!-- Center Line Storage for GSAP -->
-        <div class="fixed top-24 left-0 right-0 z-20 pointer-events-none">
-            <div class="container mx-auto px-6">
-                <div id="currentStoryYearDisplay" class="text-center text-6xl font-bold text-blue-400/20 transition-all duration-500 ease-in-out">
-                </div>
+
+        <div #timelineContainer class="relative">
+            <!-- Central Line -->
+            <div class="absolute left-1/2 top-0 bottom-0 w-[2px] bg-slate-800 -translate-x-1/2 transition-all duration-1000 hidden md:block"
+                 [class.opacity-100]="isLineVisible()" [class.opacity-0]="!isLineVisible()">
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-500 via-purple-500 to-emerald-500 opacity-30"></div>
             </div>
-        </div>
-        
-        <div #timelineContainer class="relative max-w-5xl mx-auto py-12">
-            <div class="relative">
-                <div class="timeline-center-line" [class.is-visible]="isLineVisible"></div>
 
-                <div *ngFor="let milestone of storyMilestones; let i = index" 
-                     class="timeline-year-group mb-20 relative" 
-                     [attr.data-year]="milestone.year">
-                    
-                    <div class="flex justify-center mb-16 relative z-10">
-                        <div class="px-6 py-2 rounded-full bg-slate-900 border border-blue-500/30 text-blue-400 text-lg font-bold shadow-lg shadow-blue-500/10 backdrop-blur-md timeline-year-marker">
-                            {{milestone.year}}
-                        </div>
-                    </div>
+            <!-- Milestones -->
+            <div class="space-y-32 relative">
+                @for (m of milestones(); track m.year; let i = $index) {
+                  <div class="timeline-year-group relative" [attr.data-year]="m.year">
+                      
+                      <!-- Year Bubble (Mobile) -->
+                      <div class="md:hidden flex justify-center mb-12">
+                          <span class="px-6 py-2 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-400 font-bold text-lg">
+                              {{m.year}}
+                          </span>
+                      </div>
 
-                    <div class="timeline-item group side-center" 
-                         [class.side-left]="i % 2 === 0" 
-                         [class.side-right]="i % 2 !== 0">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-item-content">
-                            <div class="inline-block p-8 rounded-2xl glass-panel hover:bg-white/10 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 max-w-md w-full">
-                                <span class="text-4xl mb-4 block">{{milestone.icon}}</span>
-                                <h3 class="text-2xl font-bold text-white mb-3">{{milestone.title}}</h3>
-                                <p class="text-gray-300 leading-relaxed">{{milestone.description}}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                      <div class="timeline-item flex flex-col md:flex-row items-center gap-12 md:gap-0"
+                           [class.side-left]="i % 2 === 0"
+                           [class.side-right]="i % 2 !== 0">
+                          
+                          <!-- Content Block -->
+                          <div [class]="'w-full md:w-[42%] timeline-item-content ' + (i % 2 === 0 ? 'md:mr-auto text-right' : 'md:ml-auto text-left order-last md:order-none')">
+                              <div class="glass-panel p-8 md:p-12 rounded-[2.5rem] bg-slate-900/40 border border-white/5 hover:border-blue-500/30 transition-all duration-500 group shadow-lg">
+                                  <div [class]="'flex items-center gap-6 mb-6 ' + (i % 2 === 0 ? 'md:flex-row-reverse' : '')">
+                                      <div class="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 flex-shrink-0">
+                                          {{m.icon}}
+                                      </div>
+                                      <div>
+                                          <span class="text-blue-400 font-bold text-sm mb-1 block">{{m.year}}</span>
+                                          <h4 class="text-2xl font-bold text-white leading-tight">{{m.title}}</h4>
+                                      </div>
+                                  </div>
+                                  <p class="text-gray-400 leading-relaxed text-sm md:text-base">
+                                      {{m.description}}
+                                  </p>
+                              </div>
+                          </div>
+
+                          <!-- Center Dot (Desktop) -->
+                          <div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-slate-900 border-4 border-slate-800 items-center justify-center timeline-dot">
+                              <div class="w-4 h-4 rounded-full transition-all duration-500"
+                                   [class.bg-blue-500]="i === 0"
+                                   [class.bg-purple-500]="i > 0 && i < milestones().length - 1"
+                                   [class.bg-emerald-500]="i === milestones().length - 1"></div>
+                          </div>
+
+                          <!-- Spacer for the other side -->
+                          <div class="w-full md:w-[42%] hidden md:block"></div>
+                      </div>
+                  </div>
+                }
             </div>
         </div>
     </div>
