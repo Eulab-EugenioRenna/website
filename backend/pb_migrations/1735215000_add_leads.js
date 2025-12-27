@@ -24,7 +24,10 @@ migrate((db) => {
       {
         name: "metadata",
         type: "json",
-        required: false
+        required: false,
+        options: {
+          maxSize: 2000
+        }
       }
     ],
     listRule: null,   // Admin only

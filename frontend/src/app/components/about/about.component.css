@@ -1,0 +1,9 @@
+/* Ensure cards are visible by default */
+.about-card {
+  opacity: 1;
+}
+
+/* Smooth transitions for hover effects */
+.about-card {
+  transition: all 0.3s ease;
+}

@@ -110,6 +110,13 @@ export class ServicesComponent implements OnInit {
       // Unlock and persist
       this.isPricingUnlocked.set(true);
       localStorage.setItem('eulab_prices_unlocked', 'true');
+      
+      // Close modal after successful submission
+      this.closePricingModal();
+      
+      // Reset form
+      this.leadForm.name = '';
+      this.leadForm.email = '';
     } catch (error) {
       console.error('Failed to submit lead:', error);
       // Even on error, we might want to unlock to not block the user, 

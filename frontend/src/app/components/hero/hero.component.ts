@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, HostListener, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollService } from '../../services/scroll.service';
 import { gsap } from 'gsap';
@@ -10,13 +10,20 @@ import { gsap } from 'gsap';
   templateUrl: './hero.component.html',
   styleUrls: ['./hero.component.css']
 })
-export class HeroComponent implements AfterViewInit {
+export class HeroComponent implements AfterViewInit, OnDestroy {
   @ViewChild('heroText') heroText!: ElementRef;
   @ViewChild('heroSub') heroSub!: ElementRef;
   @ViewChild('heroBtn') heroBtn!: ElementRef;
   @ViewChild('floatingCircle') floatingCircle!: ElementRef;
 
+  hasScrolled = signal(false);
+
   constructor(private scrollService: ScrollService) {}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.hasScrolled.set(window.scrollY > 100);
+  }
 
   scrollTo(section: string) {
     this.scrollService.scrollToSection(section);
@@ -47,5 +54,9 @@ export class HeroComponent implements AfterViewInit {
       yoyo: true,
       ease: 'sine.inOut'
     });
+  }
+
+  ngOnDestroy() {
+    // Cleanup if needed
   }
 }

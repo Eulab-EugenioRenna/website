@@ -108,6 +108,7 @@ export class PocketbaseService {
       }
     }
     this.pb = new PocketBase(pbUrl);
+    this.pb.autoCancellation(false);
   }
 
   get client() {
